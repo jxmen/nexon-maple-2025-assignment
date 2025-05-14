@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  gateway-server:
+    image: node:18
+    working_dir: /app
+    volumes:
+      - ./gateway-server:/app
+    command: ["npm", "start"]
+    ports:
+      - "3001:3000"
+  auth-server:
+    image: node:18
+    working_dir: /app
+    volumes:
+      - ./auth-server:/app
+    command: ["npm", "start"]
+    ports:
+      - "3002:3000"
+  event-server:
+    image: node:18
+    working_dir: /app
+    volumes:
+      - ./event-server:/app
+    command: ["npm", "start"]
+    ports:
+      - "3003:3000"
