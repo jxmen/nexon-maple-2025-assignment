@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { PasswordEncoder } from '../users/password-encoder';
+import { PasswordEncoder } from '../password-encoder';
 
 @Injectable()
 export class BcryptPasswordEncoder implements PasswordEncoder {

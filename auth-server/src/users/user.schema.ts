@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { now } from 'mongoose';
 import { UserRoles } from './user.roles';
-import { PasswordEncoder } from './password-encoder';
+import { PasswordEncoder } from '../password-encoder';
 
 @Schema({ timestamps: true, collection: 'user' })
 export class User {
