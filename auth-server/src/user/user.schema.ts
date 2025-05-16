@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { now } from 'mongoose';
-import { UserRoles } from './user.roles';
 import { PasswordEncoder } from '../password-encoder';
 
 @Schema({ timestamps: true, collection: 'user' })
@@ -22,7 +21,7 @@ export class User {
     password: string,
     passwordEncoder: PasswordEncoder,
   ): User => {
-    return new User(id, passwordEncoder.encode(password), UserRoles.USER);
+    return new User(id, passwordEncoder.encode(password), 'user');
   };
 
   @Prop({ required: true, unique: true })
