@@ -36,7 +36,8 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # dotenv environment variable files
-.env
+# NOTE: 편의상 env파일도 업로드합니다. (실서버 환경에서는 업로드하지 않는 것이 좋음)
+#.env
 .env.development.local
 .env.test.local
 .env.production.local
