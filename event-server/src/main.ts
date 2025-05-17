@@ -1,7 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ConsoleLogger } from '@nestjs/common';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { ConsoleLogger, ValidationPipe } from '@nestjs/common';
+import {
+  MicroserviceOptions,
+  RpcException,
+  Transport,
+} from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
@@ -22,6 +26,24 @@ async function bootstrap() {
         port,
       },
     },
+  );
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // DTO에 정의되지 않은 값은 제거
+      forbidNonWhitelisted: true, // DTO에 정의되지 않은 값이 있으면 에러
+      transform: true, // string → number, boolean, Date 등 타입 변환
+      exceptionFactory: (errors) => {
+        const messages = errors.map(
+          (e) => `${e.property} - ${Object.values(e.constraints).join(', ')}`,
+        );
+
+        return new RpcException({
+          code: 'INVALID_INPUT',
+          message: messages,
+        });
+      },
+    }),
   );
 
   await app.listen();
