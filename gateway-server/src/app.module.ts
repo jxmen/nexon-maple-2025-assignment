@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { EventsModule } from './events/events.module';
+import { EventModule } from './event/event.module';
 
 @Module({
   controllers: [AppController],
@@ -12,7 +12,7 @@ import { EventsModule } from './events/events.module';
       isGlobal: true, // 전체 앱에서 ConfigService 사용 가능
       envFilePath: process.env.NODE_ENV === 'local' ? '.env.local' : '.env',
     }),
-    EventsModule,
+    EventModule,
   ],
 })
 export class AppModule {}

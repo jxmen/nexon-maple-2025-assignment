@@ -30,6 +30,11 @@ Authorization: Bearer {{user_access_token}}
   "end_date": "2025-06-02T23:59:59Z"
 }
 
+###
+# 이벤트 목록 조회
+
+GET http://localhost:3001/events
+
 
 ###
 # (추가 예정) 이벤트 보상 등록 (관리자, 운영자만 가능)

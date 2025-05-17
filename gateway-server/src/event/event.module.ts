@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { EventsController } from './events.controller';
-import { EventsService } from './events.service';
+import { EventController } from './event.controller';
+import { EventService } from './event.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
@@ -21,7 +21,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       },
     ]),
   ],
-  controllers: [EventsController],
-  providers: [EventsService],
+  controllers: [EventController],
+  providers: [EventService],
 })
-export class EventsModule {}
+export class EventModule {}

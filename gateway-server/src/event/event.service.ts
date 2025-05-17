@@ -9,7 +9,7 @@ import { catchError, firstValueFrom, throwError } from 'rxjs';
 import { CreateEventRequest } from './dto/create-event-request';
 
 @Injectable()
-export class EventsService {
+export class EventService {
   constructor(
     @Inject('EVENT_SERVER')
     private readonly eventServerClient: ClientProxy,
