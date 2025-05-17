@@ -1,0 +1,11 @@
+GET http://localhost:3001
+
+###
+
+POST http://localhost:3001/auth/sign-up
+Content-Type: application/json
+
+{
+  "id": "jxmen",
+  "password": "password"
+}

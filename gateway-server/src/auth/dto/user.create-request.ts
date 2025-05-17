@@ -1,9 +1,9 @@
 export class UserCreateRequest {
-  constructor(name: string, password: string) {
-    this.name = name;
+  constructor(id: string, password: string) {
+    this.id = id;
     this.password = password;
   }
 
-  name: string;
+  id: string;
   password: string;
 }

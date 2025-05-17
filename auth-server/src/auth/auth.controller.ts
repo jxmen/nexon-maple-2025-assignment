@@ -1,16 +1,18 @@
-import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
-import { Response } from 'express';
+import { Controller } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import UserCreateRequest from '../user/user.create-request';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('sign-up')
-  async signUp(@Body() req: UserCreateRequest, @Res() res: Response) {
+  @MessagePattern('sign-up')
+  async signUp(@Payload() req: UserCreateRequest) {
     await this.authService.signUp(req.id, req.password);
 
-    res.status(HttpStatus.CREATED).send({});
+    return {
+      result: 'success',
+    };
   }
 }

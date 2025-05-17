@@ -7,7 +7,7 @@ services:
       - ./gateway-server:/app
     command: ["npm", "start"]
     ports:
-      - "3001:3000"
+      - "3001:3001"
 
   auth-server:
     image: node:18
@@ -16,9 +16,10 @@ services:
       - ./auth-server:/app
     command: ["npm", "start"]
     ports:
-      - "3002:3000"
+      - "3002:3002"
     depends_on:
       - mongodb
+      - gateway-server
 
   event-server:
     image: node:18
@@ -27,7 +28,9 @@ services:
       - ./event-server:/app
     command: ["npm", "start"]
     ports:
-      - "3003:3000"
+      - "3003:3003"
+    depends_on:
+      - gateway-server
 
   mongodb:
     image: mongo:latest
