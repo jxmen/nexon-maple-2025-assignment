@@ -44,5 +44,19 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
 
+  event-mongodb:
+    image: mongo:latest
+    container_name: event-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - event-mongo-data:/data/db
+    environment:
+      # NOTE: .env 파일이 같은 디렉토리에 있다면 자동으로 값을 읽어온다.
+      MONGO_INITDB_ROOT_USERNAME: ${EVENT_MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${EVENT_MONGO_INITDB_ROOT_PASSWORD}
+
+
 volumes:
   mongo-data:
+  event-mongo-data:
