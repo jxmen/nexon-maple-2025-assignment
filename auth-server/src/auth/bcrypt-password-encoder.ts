@@ -4,9 +4,13 @@ import { PasswordEncoder } from '../password-encoder';
 
 @Injectable()
 export class BcryptPasswordEncoder implements PasswordEncoder {
-  encode(password: string): string {
-    const saltRounds = 10;
+  private static readonly SALT_ROUNDS = 10;
 
-    return bcrypt.hashSync(password, saltRounds);
+  verify(rawPassword: string, userPassword: string): Promise<boolean> {
+    return bcrypt.compare(rawPassword, userPassword);
+  }
+
+  encode(password: string): string {
+    return bcrypt.hashSync(password, BcryptPasswordEncoder.SALT_ROUNDS);
   }
 }
