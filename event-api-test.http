@@ -35,6 +35,10 @@ Authorization: Bearer {{user_access_token}}
 
 GET http://localhost:3001/events
 
+###
+# 이벤트 상세 조회
+GET http://localhost:3001/events/20250517-check-in
+
 
 ###
 # (추가 예정) 이벤트 보상 등록 (관리자, 운영자만 가능)

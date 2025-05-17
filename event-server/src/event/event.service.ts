@@ -3,7 +3,9 @@ import { CreateEventRequest } from './create-event.request';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Event } from './event.schema';
-import { GetEventsResponse } from './dto/GetEventsResopnse';
+import { GetEventsResponse } from './dto/get-events.response';
+import { RpcException } from '@nestjs/microservices';
+import { GetEventDetailResponse } from './dto/get-event-detail.response';
 
 @Injectable()
 export class EventService {
@@ -32,5 +34,18 @@ export class EventService {
     const events: Event[] = await this.eventModel.find().exec();
 
     return events.map((it) => new GetEventsResponse(it));
+  }
+
+  async findByCode(code: string) {
+    const event: Event = await this.eventModel.findOne({ code }).exec();
+    if (!event) {
+      this.logger.debug(`이벤트를 찾을 수 없음. code: '${code}'`);
+      throw new RpcException({
+        code: 'EVENT_NOT_FOUND',
+        message: '해당 이벤트를 찾을 수 없습니다.',
+      });
+    }
+
+    return new GetEventDetailResponse(event);
   }
 }

@@ -22,4 +22,11 @@ export class EventController {
 
     return { events };
   }
+
+  @MessagePattern('get-event-detail')
+  async getEventDetail(@Payload() payload: { code: string }) {
+    const { code } = payload;
+
+    return await this.eventService.findByCode(code);
+  }
 }

@@ -1,5 +1,5 @@
-type EventStatus = 'activate' | 'deactivate';
-type EventType = 'check-in';
+import { EventType } from '../enums/event-type';
+import { EventStatus } from '../enums/event-status';
 
 export type GetEventsResponse = {
   events: {
