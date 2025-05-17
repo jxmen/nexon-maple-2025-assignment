@@ -2,8 +2,13 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { now } from 'mongoose';
 import { EventType } from './create-event.request';
 
-@Schema({ timestamps: true, collection: 'user' })
+export type EventStatus = 'activate' | 'deactivate';
+
+@Schema({ timestamps: true, collection: 'event' })
 export class Event {
+  @Prop({ required: true, unique: true })
+  code: string;
+
   @Prop({ required: true })
   name: string;
 
@@ -14,12 +19,13 @@ export class Event {
   condition: Record<string, any> = {};
 
   @Prop({ required: true })
-  date: {
-    start: Date;
-    end: Date;
-  };
+  start_date: Date;
 
-  // 추후 리워드 관련 컬럼 추가 필요
+  @Prop({ required: true })
+  end_date: Date;
+
+  @Prop({ required: true, default: 'activate' })
+  status: EventStatus;
 
   @Prop({ default: now() })
   createdAt: Date;

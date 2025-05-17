@@ -9,11 +9,9 @@ Authorization: Bearer {{admin_access_token}}
   "name": "05/17 접속 이벤트 - 접속만 해도 보상이 와르르 (1회 한정)",
   "code": "20250517-check-in",
   "type": "check-in",
-  "condition": { },
-  "date": {
-    "start": "2025-05-17T00:00:00Z",
-    "end": "2025-06-02T23:59:59Z"
-  }
+  "condition": {},
+  "start_date": "2025-05-17T00:00:00Z",
+  "end_date": "2025-06-02T23:59:59Z"
 }
 
 ###
@@ -28,10 +26,8 @@ Authorization: Bearer {{user_access_token}}
   "code": "20250517-check-in",
   "type": "check-in",
   "condition": { },
-  "date": {
-    "start": "2025-05-17T00:00:00Z",
-    "end": "2025-06-02T23:59:59Z"
-  }
+  "start_date": "2025-05-17T00:00:00Z",
+  "end_date": "2025-06-02T23:59:59Z"
 }
 
 
