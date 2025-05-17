@@ -3,6 +3,7 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { catchError, firstValueFrom, throwError } from 'rxjs';
@@ -59,7 +60,20 @@ export class EventService {
     return firstValueFrom(
       this.eventServerClient
         .send<GetEventDetailResponse>(pattern, { code })
-        .pipe(catchError((err) => throwError(() => err))),
+        .pipe(
+          catchError((err) => {
+            if (err?.code == 'EVENT_NOT_FOUND') {
+              return throwError(() => new NotFoundException(err.message));
+            }
+
+            return throwError(
+              () =>
+                new InternalServerErrorException(
+                  err.message ?? 'Unexpected error',
+                ),
+            );
+          }),
+        ),
     );
   }
 }

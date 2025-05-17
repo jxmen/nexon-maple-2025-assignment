@@ -37,7 +37,7 @@ GET http://localhost:3001/events
 
 ###
 # 이벤트 상세 조회
-GET http://localhost:3001/events/20250517-check-in
+GET http://localhost:3001/events/not-exist
 
 
 ###
