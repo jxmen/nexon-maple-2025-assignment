@@ -7,6 +7,7 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { catchError, firstValueFrom, throwError } from 'rxjs';
 import { CreateEventRequest } from './dto/create-event-request';
+import { GetEventsResponse } from './dto/get-events.response';
 
 @Injectable()
 export class EventService {
@@ -38,6 +39,18 @@ export class EventService {
             }
           }),
         ),
+    );
+  }
+
+  async findAll() {
+    const pattern = 'get-events';
+
+    return firstValueFrom(
+      this.eventServerClient.send<GetEventsResponse>(pattern, {}).pipe(
+        catchError((err) => {
+          return throwError(() => err);
+        }),
+      ),
     );
   }
 }

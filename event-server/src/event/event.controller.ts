@@ -15,4 +15,11 @@ export class EventController {
       result: 'success',
     };
   }
+
+  @MessagePattern('get-events')
+  async getEvents() {
+    const events = await this.eventService.findAll();
+
+    return { events };
+  }
 }

@@ -3,6 +3,7 @@ import { CreateEventRequest } from './create-event.request';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Event } from './event.schema';
+import { GetEventsResponse } from './dto/GetEventsResopnse';
 
 @Injectable()
 export class EventService {
@@ -25,5 +26,11 @@ export class EventService {
     });
     await createdEvent.save();
     this.logger.debug(`이벤트 code '${code}' 생성됨`);
+  }
+
+  async findAll() {
+    const events: Event[] = await this.eventModel.find().exec();
+
+    return events.map((it) => new GetEventsResponse(it));
   }
 }
