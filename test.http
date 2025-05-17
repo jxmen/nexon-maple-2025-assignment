@@ -1,3 +1,5 @@
+@env=local
+
 GET http://localhost:3001
 
 ###
@@ -23,3 +25,43 @@ Content-Type: application/json
   "id": "jxmen",
   "password": "password"
 }
+
+###
+# 이벤트 생성 (관리자, 운영자만 가능)
+
+POST http://localhost:3001/events
+Content-Type: application/json
+Authorization: Bearer {{admin_access_token}}
+
+{
+  "name": "05/17 접속 이벤트 - 접속만 해도 보상이 와르르 (1회 한정)",
+  "code": "20250517-check-in",
+  "type": "check-in",
+  "condition": { },
+  "date": {
+    "start": "2025-05-17T00:00:00Z",
+    "end": "2025-06-02T23:59:59Z"
+  }
+}
+
+###
+# 이벤트 생성 실패 - 유저/감시자 권한을 가진 사용자는 이용 불가능
+
+POST http://localhost:3001/events
+Content-Type: application/json
+Authorization: Bearer {{user_access_token}}
+
+{
+  "name": "05/17 접속 이벤트 - 접속만 해도 보상이 와르르 (1회 한정)",
+  "code": "20250517-check-in",
+  "type": "check-in",
+  "condition": { },
+  "date": {
+    "start": "2025-05-17T00:00:00Z",
+    "end": "2025-06-02T23:59:59Z"
+  }
+}
+
+
+###
+# (추가 예정) 이벤트 보상 등록 (관리자, 운영자만 가능)
