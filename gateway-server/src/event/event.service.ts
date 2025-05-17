@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { catchError, firstValueFrom, throwError } from 'rxjs';
-import { CreateEventRequest } from './dto/create-event-request';
+import { CreateEventRequest } from './types/create-event-request';
 import { GetEventsResponse } from './types/get-events.response';
 import { GetEventDetailResponse } from './types/get-event-detail.response';
 
