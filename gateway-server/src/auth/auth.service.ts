@@ -2,10 +2,11 @@ import {
   BadRequestException,
   Inject,
   Injectable,
+  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { catchError, firstValueFrom } from 'rxjs';
+import { catchError, firstValueFrom, throwError } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -34,22 +35,23 @@ export class AuthService {
   }
 
   async signIn(id: string, password: string) {
-    try {
-      return await firstValueFrom(
-        this.authServerClient
-          .send<UserLoginSuccessResponse>('sign-in', { id, password })
-          .pipe(
-            catchError((err) => {
-              if (err?.code == 'LOGIN_FAILED') {
-                throw new UnauthorizedException(err.message);
-              } else {
-                throw err;
-              }
-            }),
-          ),
-      );
-    } catch (e) {
-      throw e;
-    }
+    return firstValueFrom(
+      this.authServerClient
+        .send<UserLoginSuccessResponse>('sign-in', { id, password })
+        .pipe(
+          catchError((err) => {
+            if (err?.code === 'LOGIN_FAILED') {
+              return throwError(() => new UnauthorizedException(err.message));
+            }
+
+            return throwError(
+              () =>
+                new InternalServerErrorException(
+                  err.message ?? '예상치 못한 에러가 발생했습니다.',
+                ),
+            );
+          }),
+        ),
+    );
   }
 }
