@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Inject,
   Injectable,
   InternalServerErrorException,
@@ -10,6 +11,7 @@ import { catchError, firstValueFrom, throwError } from 'rxjs';
 import { CreateEventRequest } from './types/create-event-request';
 import { GetEventsResponse } from './types/get-events.response';
 import { GetEventDetailResponse } from './types/get-event-detail.response';
+import { CreateEventRewardRequest } from './types/create-event-reward.request';
 
 @Injectable()
 export class EventService {
@@ -32,12 +34,7 @@ export class EventService {
               case 'ALREADY_EXIST_USER_CANNOT_SIGNUP':
                 return throwError(() => new BadRequestException(err.message));
               default:
-                return throwError(
-                  () =>
-                    new InternalServerErrorException(
-                      err.message ?? 'Unexpected error',
-                    ),
-                );
+                return this.handleUnexpectedError(err);
             }
           }),
         ),
@@ -50,7 +47,7 @@ export class EventService {
     return firstValueFrom(
       this.eventServerClient
         .send<GetEventsResponse>(pattern, {})
-        .pipe(catchError((err) => throwError(() => err))),
+        .pipe(catchError((err) => this.handleUnexpectedError(err))),
     );
   }
 
@@ -63,17 +60,52 @@ export class EventService {
         .pipe(
           catchError((err) => {
             if (err?.code == 'EVENT_NOT_FOUND') {
-              return throwError(() => new NotFoundException(err.message));
+              return this.handleEventNotFound(err);
             }
 
-            return throwError(
-              () =>
-                new InternalServerErrorException(
-                  err.message ?? 'Unexpected error',
-                ),
-            );
+            return this.handleUnexpectedError(err);
           }),
         ),
+    );
+  }
+
+  async createEventRewards(
+    eventCode: string,
+    request: CreateEventRewardRequest,
+  ) {
+    const pattern = 'create-event-rewards';
+
+    return firstValueFrom(
+      this.eventServerClient
+        .send<{ result: 'success' }>(pattern, {
+          event_code: eventCode,
+          ...request,
+        })
+        .pipe(
+          catchError((err) => {
+            const errorHandlers: Record<string, () => any> = {
+              INVALID_INPUT: () =>
+                throwError(() => new BadRequestException(err.message)),
+              EVENT_NOT_FOUND: () => this.handleEventNotFound(err),
+              ALREADY_REWARD_REGISTERED: () =>
+                throwError(() => new ConflictException(err.message)),
+            };
+
+            const handler = errorHandlers[err.code];
+
+            return handler ? handler() : this.handleUnexpectedError(err);
+          }),
+        ),
+    );
+  }
+
+  private handleEventNotFound(err) {
+    return throwError(() => new NotFoundException(err.message));
+  }
+
+  private handleUnexpectedError(err) {
+    return throwError(
+      () => new InternalServerErrorException(err.message ?? 'Unexpected error'),
     );
   }
 }

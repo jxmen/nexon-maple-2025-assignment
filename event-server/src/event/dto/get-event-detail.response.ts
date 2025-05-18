@@ -1,5 +1,5 @@
 import { Event, EventStatus } from '../event.schema';
-import { EventType } from '../create-event.request';
+import { EventType } from '../enum/event-type';
 
 export class GetEventDetailResponse {
   name: string;
