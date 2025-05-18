@@ -5,6 +5,7 @@ import { EventService } from './event.service';
 import { CreateEventRequest } from './types/create-event-request';
 import { GetEventsResponse } from './types/get-events.response';
 import { GetEventDetailResponse } from './types/get-event-detail.response';
+import { CreateEventRewardRequest } from './types/create-event-reward.request';
 
 @Controller('events')
 export class EventController {
@@ -41,6 +42,21 @@ export class EventController {
       status: 200,
       result: 'success',
       data: response,
+    });
+  }
+
+  @Post(':event_code/reward')
+  @RequireRoles('admin', 'operator')
+  async createEventReward(
+    @Param('event_code') eventCode: string,
+    @Body() request: CreateEventRewardRequest,
+    @Res() res: Response,
+  ) {
+    await this.eventService.createEventReward(eventCode, request);
+
+    res.status(201).send({
+      status: 201,
+      result: 'success',
     });
   }
 }
