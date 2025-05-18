@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { CreateEventRequest } from './create-event.request';
+import { CreateEventRequest } from './dto/create-event.request';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Event } from './event.schema';

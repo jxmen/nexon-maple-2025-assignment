@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { CreateEventRequest } from './create-event.request';
+import { CreateEventRequest } from './dto/create-event.request';
 import { EventService } from './event.service';
 
 @Controller('event')

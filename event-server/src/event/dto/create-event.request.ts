@@ -6,10 +6,7 @@ import {
   IsString,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-
-export enum EventType {
-  CHECK_IN = 'check-in',
-}
+import { EventType } from '../enum/event-type';
 
 export class CreateEventRequest {
   @IsString()

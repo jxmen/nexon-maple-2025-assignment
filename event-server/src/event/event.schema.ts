@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { now } from 'mongoose';
-import { EventType } from './create-event.request';
+import { EventType } from './enum/event-type';
 
 export type EventStatus = 'activate' | 'deactivate';
 
