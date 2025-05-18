@@ -45,14 +45,14 @@ export class EventController {
     });
   }
 
-  @Post(':event_code/reward')
+  @Post(':event_code/rewards')
   @RequireRoles('admin', 'operator')
-  async createEventReward(
+  async createEventRewards(
     @Param('event_code') eventCode: string,
     @Body() request: CreateEventRewardRequest,
     @Res() res: Response,
   ) {
-    await this.eventService.createEventReward(eventCode, request);
+    await this.eventService.createEventRewards(eventCode, request);
 
     res.status(201).send({
       status: 201,

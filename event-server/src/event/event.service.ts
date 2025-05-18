@@ -45,7 +45,7 @@ export class EventService {
     return new GetEventDetailResponse(event);
   }
 
-  async createReward(request: CreateEventRewardRequest) {
+  async createRewards(request: CreateEventRewardRequest) {
     const { event_code } = request;
     const event = await this.validateExistByCode(event_code);
     await this.validateRewardNotExistByEventCode(event_code);

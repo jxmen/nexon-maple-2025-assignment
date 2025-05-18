@@ -1,8 +1,7 @@
+### Hello World!
 GET http://localhost:3001
 
-###
-
-# 회원가입(유저 등록)
+### 회원가입(유저 등록)
 
 POST http://localhost:3001/auth/sign-up
 Content-Type: application/json
@@ -12,9 +11,7 @@ Content-Type: application/json
   "password": "password"
 }
 
-###
-
-# 가입된 정보로 로그인
+### 가입된 정보로 로그인
 
 POST http://localhost:3001/auth/sign-in
 Content-Type: application/json

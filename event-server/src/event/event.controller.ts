@@ -31,9 +31,9 @@ export class EventController {
     return await this.eventService.findByCode(code);
   }
 
-  @MessagePattern('create-event-reward')
+  @MessagePattern('create-event-rewards')
   async createEventRewards(@Payload() request: CreateEventRewardRequest) {
-    await this.eventService.createReward(request);
+    await this.eventService.createRewards(request);
 
     return {
       result: 'success',

@@ -69,11 +69,11 @@ export class EventService {
     );
   }
 
-  async createEventReward(
+  async createEventRewards(
     eventCode: string,
     request: CreateEventRewardRequest,
   ) {
-    const pattern = 'create-event-reward';
+    const pattern = 'create-event-rewards';
 
     return firstValueFrom(
       this.eventServerClient
