@@ -1,4 +1,6 @@
+export type UserRole = 'user' | 'operator' | 'auditor' | 'admin';
+
 export type JwtUser = {
-  id: number;
-  role: 'user' | 'operator' | 'auditor' | 'admin';
+  id: string;
+  role: UserRole;
 };

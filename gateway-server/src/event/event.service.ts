@@ -1,17 +1,19 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { catchError, firstValueFrom, throwError } from 'rxjs';
+import { catchError, firstValueFrom, Observable, throwError } from 'rxjs';
 import { CreateEventRequest } from './types/create-event-request';
 import { GetEventsResponse } from './types/get-events.response';
 import { GetEventDetailResponse } from './types/get-event-detail.response';
 import { CreateEventRewardRequest } from './types/create-event-reward.request';
+import { RequestRewardResponse } from './types/request-reward.response';
 
 @Injectable()
 export class EventService {
@@ -99,11 +101,49 @@ export class EventService {
     );
   }
 
-  private handleEventNotFound(err) {
+  async rewardRequest(
+    eventCode: string,
+    userId: string,
+  ): Promise<RequestRewardResponse> {
+    const pattern = 'reward-request';
+
+    return firstValueFrom(
+      this.eventServerClient
+        .send<RequestRewardResponse>(pattern, {
+          event_code: eventCode,
+          user_id: userId,
+        })
+        .pipe(
+          catchError((err) => {
+            const errorHandlers: Record<string, () => Observable<never>> = {
+              EVENT_NOT_FOUND: () => this.handleEventNotFound(err),
+              EVENT_ENDED: () =>
+                throwError(() => new BadRequestException(err.message)),
+              EVENT_NOT_STARTED: () =>
+                throwError(() => new BadRequestException(err.message)),
+              EVENT_NOT_ACTIVATED: () =>
+                throwError(() => new BadRequestException(err.message)),
+              EVENT_REWARD_NOT_CONFIGURED: () =>
+                throwError(() => new ConflictException(err.message)),
+              EVENT_CONDITION_NOT_MET: () =>
+                throwError(() => new ForbiddenException(err.message)),
+              REWARD_ALREADY_CLAIMED: () =>
+                throwError(() => new ConflictException(err.message)),
+            };
+
+            const handler = errorHandlers[err.code];
+
+            return handler ? handler() : this.handleUnexpectedError(err);
+          }),
+        ),
+    );
+  }
+
+  private handleEventNotFound(err): Observable<never> {
     return throwError(() => new NotFoundException(err.message));
   }
 
-  private handleUnexpectedError(err) {
+  private handleUnexpectedError(err): Observable<never> {
     return throwError(
       () => new InternalServerErrorException(err.message ?? 'Unexpected error'),
     );
