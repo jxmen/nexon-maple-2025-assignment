@@ -7,9 +7,9 @@
 ```
 .
 ├── apps
-│   ├── auth-server # 인증 서버 (PORT: 3002)
-│   ├── event-server # 이벤트 서버 (PORT: 3003)
-│   └── gateway-server # 게이트웨이 서버 (PORT: 3001)
+│   ├── auth-server # 인증 서버
+│   ├── event-server # 이벤트 서버
+│   └── gateway-server # 게이트웨이 서버
 ├── docker-compose.yml
 ├── docs # 문서
 └── test-files # API, 동시성 테스트 시 사용한 파일 모음 디렉토리
@@ -20,6 +20,7 @@
 
 **Gateway Server PORT는 `3001`번으로 설정되어 있습니다.** API 테스트 시 `3001`번으로 요청을 보내야 합니다.
 
+- Gateway Server: `3001`
 - Auth Server: `3002`
 - Event Server: `3003`
 
@@ -33,14 +34,20 @@ $ docker-compose up -d
 각 서버별 프로젝트 폴더로 이동하여, `npm test` 명령어를 실행합니다. npm 명령어가 있어야 합니다.
 
 ```shell
-$ cd event-server/
+$ cd apps/event-server/
 
 $ npm test # 테스트 실행
 ```
 
 ### 서버 및 데이터베이스 구성
 
-- [ ] TODO
+포트는 [docker-compose.yml](./docker-compose.yml) 파일 기준입니다.
+
+![server-and-database.png](images/server-and-database.png)
+
+- Gateway Server: 모든 요청 라우팅
+- Auth Server: 인증, 유저 관련 요청 처리
+- Event Server: 이벤트, 보상 관련 처리
 
 ### API 문서
 
