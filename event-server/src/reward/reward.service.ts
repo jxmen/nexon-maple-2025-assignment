@@ -12,7 +12,7 @@ import { RewardRequestFaildEvent } from 'src/reward/event/reward-request-faild.e
 import { RewardRequestLog } from './reward-request-log.schema';
 import { EventConditionValidator } from '../event/event-condition-validator.service';
 import { RewardRequestEventPublisher } from './reward-request-event.publisher.interface';
-import { RewardRequestResponse } from '../event/dto/reward-request.response';
+import { RewardRequestResponse } from './dto/reward-request.response';
 import { EventStatusValidator } from '../event/event-status-validator';
 
 @Injectable()

@@ -3,8 +3,8 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { RewardService } from './reward.service';
 import { GetRewardsResponse } from './dto/get-rewards.response';
 import { CreateEventRewardRequest } from './dto/create-event-reward.request';
-import { RewardRequestRequest } from '../event/dto/reward-request.request';
-import { RewardRequestResponse } from '../event/dto/reward-request.response';
+import { RewardRequestRequest } from './dto/reward-request.request';
+import { RewardRequestResponse } from './dto/reward-request.response';
 
 @Controller('reward')
 export class RewardController {
