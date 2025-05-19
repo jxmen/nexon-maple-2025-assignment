@@ -14,6 +14,10 @@ import { EventConditionValidator } from '../event/event-condition-validator.serv
 import { RewardRequestEventPublisher } from './reward-request-event.publisher.interface';
 import { RewardRequestResponse } from './dto/reward-request.response';
 import { EventStatusValidator } from '../event/event-status-validator';
+import { GetMeRewardRequestsRequest } from './dto/get-me-reward-requests.request';
+import { GetMeRewardRequestsResponse } from './dto/get-me-reward-requests.response';
+import { GetRewardRequestsRequest } from './dto/get-reward-requests.request';
+import { GetRewardRequestsResponse } from './dto/get-reward-requests.response';
 
 @Injectable()
 export class RewardService {
@@ -109,6 +113,37 @@ export class RewardService {
 
       throw e;
     }
+  }
+
+  async findAllMeRewardRequests(request: GetMeRewardRequestsRequest) {
+    const { user_id, event_code, status } = request;
+
+    const findOptions: Record<string, any> = {
+      user_id,
+      ...(event_code && { event_code }),
+      ...(status && { status }),
+    };
+
+    const requests = await this.rewardRequestLogModel.find(findOptions).exec();
+
+    return new GetMeRewardRequestsResponse(user_id, requests);
+  }
+
+  async findAllRewardRequests(
+    request: GetRewardRequestsRequest,
+  ): Promise<GetRewardRequestsResponse[]> {
+    const { event_code, status } = request;
+
+    const findOptions: Record<string, any> = {
+      ...(event_code && { event_code }),
+      ...(status && { status }),
+    };
+
+    const requests: RewardRequestLog[] = await this.rewardRequestLogModel
+      .find(findOptions)
+      .exec();
+
+    return requests.map((it) => new GetRewardRequestsResponse(it));
   }
 
   private async validateRewardExistByEventCode(eventCode: string) {

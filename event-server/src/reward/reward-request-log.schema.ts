@@ -1,7 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { now } from 'mongoose';
 
-export type RewardRequestLogStatus = 'success' | 'failed';
+export enum RewardRequestLogStatus {
+  Success = 'success',
+  Failed = 'failed',
+}
 
 @Schema({ timestamps: true, collection: 'reward_request_log' })
 export class RewardRequestLog {
@@ -11,15 +14,15 @@ export class RewardRequestLog {
   @Prop({ required: true })
   user_id: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, enum: RewardRequestLogStatus })
   status: RewardRequestLogStatus;
 
   // --- Dates
   @Prop({ default: now() })
-  createdAt: Date;
+  createdAt: Date = new Date();
 
   @Prop({ default: now() })
-  updatedAt: Date;
+  updatedAt: Date = new Date();
 }
 
 export const RewardRequestLogSchema =
