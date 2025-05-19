@@ -4,7 +4,7 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { GetRewardsResponse } from './types/get-rewards.response';
+import { GetRewardsResponse } from './dto/get-rewards.response';
 import { ClientProxy } from '@nestjs/microservices';
 import { catchError, firstValueFrom, throwError } from 'rxjs';
 import { GetMeRewardRequestsResponse } from '../me/dto/get-me-reward-requests.response';

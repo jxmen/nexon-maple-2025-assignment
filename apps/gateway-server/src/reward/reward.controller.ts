@@ -1,7 +1,7 @@
 import { Controller, Get, Res } from '@nestjs/common';
 import { RewardService } from './reward.service';
 import { Response } from 'express';
-import { GetRewardsResponse } from './types/get-rewards.response';
+import { GetRewardsResponse } from './dto/get-rewards.response';
 
 @Controller('rewards')
 export class RewardController {
