@@ -70,6 +70,10 @@ $ npm test # 테스트 실행
 - [NestJS Interceptor](https://docs.nestjs.com/interceptors) 기능을 사용하여 관심사
   분리 ([PR #19](https://github.com/jxmen/nexon-maple-2025-assignment/pull/19))
 
+### 동시성 이슈에 대한 고민
+
+- [동시성 이슈에 대해 정리한 문서](./docs/concurrency-control.md)
+
 ### 회고
 
 - [ ] 좋았던 점
