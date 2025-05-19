@@ -56,7 +56,16 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${EVENT_MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${EVENT_MONGO_INITDB_ROOT_PASSWORD}
 
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped # 사용자가 멈춘 경우는 재시작X (기본적으로 항상 재시작)
 
 volumes:
   mongo-data:
   event-mongo-data:
+  redis-data:

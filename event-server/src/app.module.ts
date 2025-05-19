@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { EventModule } from './event/event.module';
 import { RewardModule } from './reward/reward.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { RedisModule } from '@nestjs-modules/ioredis';
 
 @Module({
   imports: [
@@ -15,10 +16,17 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       envFilePath: process.env.NODE_ENV === 'local' ? '.env.local' : '.env',
     }),
     MongooseModule.forRootAsync({
+      inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         uri: configService.get<string>('EVENT_MONGO_URI'),
       }),
+    }),
+    RedisModule.forRootAsync({
       inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'single',
+        url: configService.get<string>('REDIS_URI'),
+      }),
     }),
     EventModule,
     RewardModule,

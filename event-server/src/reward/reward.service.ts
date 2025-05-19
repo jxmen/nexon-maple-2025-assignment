@@ -18,6 +18,7 @@ import { GetMeRewardRequestsRequest } from './dto/get-me-reward-requests.request
 import { GetMeRewardRequestsResponse } from './dto/get-me-reward-requests.response';
 import { GetRewardRequestsRequest } from './dto/get-reward-requests.request';
 import { GetRewardRequestsResponse } from './dto/get-reward-requests.response';
+import { RedisService } from '../redis/redis.service';
 
 @Injectable()
 export class RewardService {
@@ -31,6 +32,7 @@ export class RewardService {
     private readonly eventConditionValidator: EventConditionValidator,
     @Inject('RewardRequestEventPublisher')
     private readonly eventPublisher: RewardRequestEventPublisher,
+    private readonly redisService: RedisService,
   ) {}
 
   private readonly logger = new Logger(RewardService.name);
@@ -69,9 +71,17 @@ export class RewardService {
    */
   async requestReward(eventCode: string, userId: string) {
     try {
-      // TODO: (redis) 키값으로 조회하고, 없다면 저장하기 (reward-request:event_code:user_id)
+      // 최초 요청은 eventCode:userId 형태로 키값을 저장합니다. 한번에 너무 많은 요청이 들어오면 예외를 던집니다.
+      const key = `reward-request-rate-limit:${eventCode}:${userId}`;
+      const allowed = await this.redisService.set(key, '1');
+      if (!allowed) {
+        throw new RpcException({
+          code: 'TOO_MANY_REQUESTS',
+          message: '요청이 너무 빠릅니다. 잠시 후 다시 시도해주세요.',
+        });
+      }
 
-      // 보상 요청 내역에서 지급하지 않았는지 확인 (캐시가 없거나, redis 장애 시 이 로직 수행)
+      // 보상 요청 내역에서 지급하지 않았는지 검증
       await this.validateSuccessLogIsNotExist({ eventCode, userId });
 
       // 이벤트가 있는지 조회하고, 엔티티로 만든다. (엔티티 메서드를 통해 내부 비즈니스 로직을 검증한다.)
@@ -108,8 +118,6 @@ export class RewardService {
       this.eventPublisher.publish(
         new RewardRequestFaildEvent({ eventCode, userId }),
       );
-
-      // TODO: 캐시 키 삭제?
 
       throw e;
     }
