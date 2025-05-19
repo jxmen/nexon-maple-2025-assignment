@@ -18,6 +18,8 @@ export class EventService {
   async create(req: CreateEventRequest) {
     const { code, name, type, condition, start_date, end_date } = req;
 
+    // TODO: code가 이미 생성되었는지 체크하는 로직 추가하여 버그 수정
+
     const createdEvent = new this.eventModel({
       code,
       name,

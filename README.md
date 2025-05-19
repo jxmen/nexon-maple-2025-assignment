@@ -40,7 +40,7 @@ $ npm test # 테스트 실행
 
 - 자주 변경될 수 있는 부분에 한하여 인터페이스 추출
 - 핵심 도메인 로직에 대한 단위 테스트 케이스 작성 
-  - [event-entity.spec.ts](./event-server/test/event/event-entity.spec.ts)
+  - [event-entity.spec.ts](./apps/event-server/test/event/event-entity.spec.ts)
 - MongoDB 철학에 따른 데이터 중복 허용을 고려하여 스키마 설계
 - [K6 Script](./concurrency-test.js)를 활용하여 동시성 이슈 테스트
 - Redis로 스로틀링 기능 구현하여 중복 요청 방지 ([PR #18](https://github.com/jxmen/nexon-maple-2025-assignment/pull/18))
@@ -49,7 +49,7 @@ $ npm test # 테스트 실행
 
 ### API 테스트 시 사용한 파일
 
-필요 시 참고 부탁드립니다!
+제가 API 테스트 시 사용한 파일입니다. 필요 시 참고 부탁드립니다!
 
 - 유저 및 인증 관련 API 테스트 파일 - ([user-api-test.http](./user-api-test.http))
 - 이벤트/보상 관련 API 테스트 파일 - ([event-api-test.http](./event-api-test.http))

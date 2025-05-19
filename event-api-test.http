@@ -13,7 +13,7 @@ Authorization: Bearer {{admin_access_token}}
   "end_date": "2025-06-02T23:59:59Z"
 }
 
-### 이벤트 생성 실패 - 유저/감시자 권한을 가진 사용자는 이용 불가능
+### 이벤트 생성 403 - 유저/감시자 권한을 가진 사용자는 이용 불가능
 
 POST http://localhost:3001/events
 Content-Type: application/json
