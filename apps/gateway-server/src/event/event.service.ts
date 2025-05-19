@@ -13,7 +13,7 @@ import { catchError, firstValueFrom, Observable, throwError } from 'rxjs';
 import { CreateEventRequest } from './dto/create-event-request';
 import { GetEventsResponse } from './types/get-events.response';
 import { GetEventDetailResponse } from './types/get-event-detail.response';
-import { CreateEventRewardRequest } from './types/create-event-reward.request';
+import { CreateEventRewardRequest } from './dto/create-event-reward.request';
 import { RequestRewardResponse } from './types/request-reward.response';
 
 @Injectable()
