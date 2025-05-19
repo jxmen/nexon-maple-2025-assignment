@@ -15,10 +15,13 @@ export class EventService {
     @InjectModel(Event.name) private readonly eventModel: Model<Event>,
   ) {}
 
+  /**
+   * 이벤트를 생성합니다.
+   */
   async create(req: CreateEventRequest) {
     const { code, name, type, condition, start_date, end_date } = req;
 
-    // TODO: code가 이미 생성되었는지 체크하는 로직 추가하여 버그 수정
+    await this.validateNotExistByCode(code);
 
     const createdEvent = new this.eventModel({
       code,
@@ -30,6 +33,16 @@ export class EventService {
     });
     await createdEvent.save();
     this.logger.debug(`이벤트 생성됨. code:'${code}'`);
+  }
+
+  private async validateNotExistByCode(code: string) {
+    const event = await this.eventModel.findOne({ code });
+    if (event) {
+      throw new RpcException({
+        code: 'EVENT_CODE_EXIST',
+        message: '이미 존재하는 이벤트 코드이므로 저장할 수 없습니다.',
+      });
+    }
   }
 
   async findAll() {

@@ -36,6 +36,8 @@ export class EventService {
                 return throwError(() => new BadRequestException(err.message));
               case 'ALREADY_EXIST_USER_CANNOT_SIGNUP':
                 return throwError(() => new BadRequestException(err.message));
+              case 'EVENT_CODE_EXIST':
+                return throwError(() => new ConflictException(err.message));
               default:
                 return this.handleUnexpectedError(err);
             }
