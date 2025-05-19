@@ -4,7 +4,17 @@
 
 ### 디렉토리 구조
 
-- [ ] TODO
+```
+.
+├── apps
+│   ├── auth-server # 인증 서버 (PORT: 3002)
+│   ├── event-server # 이벤트 서버 (PORT: 3003)
+│   └── gateway-server # 게이트웨이 서버 (PORT: 3001)
+├── docker-compose.yml
+├── docs # 문서
+└── test-files # API, 동시성 테스트 시 사용한 파일 모음 디렉토리
+
+```
 
 ### 서버 실행 방법 및 유의사항
 
