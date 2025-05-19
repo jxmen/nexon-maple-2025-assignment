@@ -13,10 +13,10 @@ export class Reward {
   items: Map<string, number>;
 
   // --- Dates
-  @Prop({ default: now() })
+  @Prop({ default: now })
   createdAt: Date;
 
-  @Prop({ default: now() })
+  @Prop({ default: now })
   updatedAt: Date;
 }
 
