@@ -48,6 +48,10 @@ export class Event {
   isActivate() {
     return this.status === 'activate';
   }
+
+  isCheckInType() {
+    return this.type === EventType.CHECK_IN;
+  }
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);

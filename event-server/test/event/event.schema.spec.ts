@@ -1,5 +1,6 @@
 import { TestEventBuilder } from './test-event-builder';
 import { EventStatus } from '../../src/event/event.schema';
+import { EventType } from '../../src/event/enum/event-type';
 
 function dateOf(year: number, month: number, day: number): Date {
   // NOTE: new Date()는 monthIndex를 받기 때문에 -1을 해준다.
@@ -70,5 +71,13 @@ describe('Event', () => {
         expect(event.isActivate()).toBeFalsy();
       },
     );
+  });
+
+  describe('isCheckInType 메서드는', () => {
+    it('이벤트 타입이 check-in일 경우 true를 리턴한다', () => {
+      const event = testEventBuilder.withType(EventType.CHECK_IN).build();
+
+      expect(event.isCheckInType()).toBeTruthy();
+    });
   });
 });

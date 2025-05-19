@@ -19,6 +19,11 @@ export class TestEventBuilder {
     return this;
   }
 
+  withType(type: EventType) {
+    this.event.type = type;
+    return this;
+  }
+
   build(): Event {
     return new Event({
       code: this.event.code ?? 'TEST_CODE',
