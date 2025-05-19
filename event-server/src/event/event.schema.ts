@@ -32,6 +32,21 @@ export class Event {
 
   @Prop({ default: now() })
   updatedAt: Date;
+
+  /**
+   * 테스트 코드에서만 사용!
+   */
+  static _testCreate(init?: Partial<Event>): Event {
+    return new Event(init);
+  }
+
+  public constructor(init?: Partial<Event>) {
+    Object.assign(this, init);
+  }
+
+  isEnded(date: Date = new Date()) {
+    return date > this.end_date;
+  }
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);
