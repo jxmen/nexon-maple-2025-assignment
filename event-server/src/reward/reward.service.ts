@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { GetRewardsResponse } from './dto/get-rewards.response';
 import { Reward } from './reward.schema';
 import { Model } from 'mongoose';
@@ -7,18 +7,14 @@ import { CreateEventRewardRequest } from './dto/create-event-reward.request';
 import { Event } from '../event/event.schema';
 import { RpcException } from '@nestjs/microservices';
 import { EventEntity } from '../event/event.entity';
-import { RewardRequestSuccessEvent } from 'src/reward/event/reward-request-success.event';
-import { RewardRequestFaildEvent } from 'src/reward/event/reward-request-faild.event';
 import { RewardRequestLog } from './reward-request-log.schema';
 import { EventConditionValidator } from '../event/event-condition-validator.service';
-import { RewardRequestEventPublisher } from './reward-request-event.publisher.interface';
 import { RewardRequestResponse } from './dto/reward-request.response';
 import { EventStatusValidator } from '../event/event-status-validator';
 import { GetMeRewardRequestsRequest } from './dto/get-me-reward-requests.request';
 import { GetMeRewardRequestsResponse } from './dto/get-me-reward-requests.response';
 import { GetRewardRequestsRequest } from './dto/get-reward-requests.request';
 import { GetRewardRequestsResponse } from './dto/get-reward-requests.response';
-import { RedisService } from '../redis/redis.service';
 
 @Injectable()
 export class RewardService {
@@ -30,9 +26,6 @@ export class RewardService {
     private readonly rewardRequestLogModel: Model<RewardRequestLog>,
     // === others ...
     private readonly eventConditionValidator: EventConditionValidator,
-    @Inject('RewardRequestEventPublisher')
-    private readonly eventPublisher: RewardRequestEventPublisher,
-    private readonly redisService: RedisService,
   ) {}
 
   private readonly logger = new Logger(RewardService.name);
@@ -70,57 +63,34 @@ export class RewardService {
    * @param userId 유저 식별자
    */
   async requestReward(eventCode: string, userId: string) {
+    // 보상 요청 내역에서 지급하지 않았는지 검증
+    await this.validateSuccessLogIsNotExist({ eventCode, userId });
+
+    // 이벤트가 있는지 조회하고, 엔티티로 만든다. (엔티티 메서드를 통해 내부 비즈니스 로직을 검증한다.)
+    const eventRaw = await this.validateExistByCode(eventCode);
+    const event = new EventEntity(eventRaw);
+
+    // 이벤트 검증 - 보상을 줄 수 있는 상태인지 검증
     try {
-      // 최초 요청은 eventCode:userId 형태로 키값을 저장합니다. 한번에 너무 많은 요청이 들어오면 예외를 던집니다.
-      const key = `reward-request-rate-limit:${eventCode}:${userId}`;
-      const allowed = await this.redisService.set(key, '1');
-      if (!allowed) {
-        throw new RpcException({
-          code: 'TOO_MANY_REQUESTS',
-          message: '요청이 너무 빠릅니다. 잠시 후 다시 시도해주세요.',
-        });
-      }
-
-      // 보상 요청 내역에서 지급하지 않았는지 검증
-      await this.validateSuccessLogIsNotExist({ eventCode, userId });
-
-      // 이벤트가 있는지 조회하고, 엔티티로 만든다. (엔티티 메서드를 통해 내부 비즈니스 로직을 검증한다.)
-      const eventRaw = await this.validateExistByCode(eventCode);
-      const event = new EventEntity(eventRaw);
-
-      // 이벤트 검증 - 보상을 줄 수 있는 상태인지 검증
-      try {
-        await new EventStatusValidator(event).validateRewardClaimable();
-      } catch (err) {
-        throw new RpcException({
-          code: err.code,
-          message: err.message,
-        });
-      }
-
-      const reward = await this.validateRewardExistByEventCode(eventCode);
-
-      // 이벤트 조건 충족 여부 검증
-      await this.eventConditionValidator.validateUserConditionSatisfied(
-        event,
-        userId,
-      );
-
-      // 성공 이벤트 발행
-      this.eventPublisher.publish(
-        new RewardRequestSuccessEvent({ eventCode, userId }),
-      );
-
-      // 보상 정보 응답
-      return new RewardRequestResponse(reward.items);
-    } catch (e) {
-      // 실패 이벤트 발행
-      this.eventPublisher.publish(
-        new RewardRequestFaildEvent({ eventCode, userId }),
-      );
-
-      throw e;
+      await new EventStatusValidator(event).validateRewardClaimable();
+    } catch (err) {
+      throw new RpcException({
+        code: err.code,
+        message: err.message,
+      });
     }
+
+    // 보상이 설정되어 있는지 검증한다. (이벤트에 대한 보상이 설정되어 있어야 함)
+    const reward = await this.validateRewardExistByEventCode(eventCode);
+
+    // 이벤트 조건 충족 여부 검증
+    await this.eventConditionValidator.validateUserConditionSatisfied(
+      event,
+      userId,
+    );
+
+    // 보상 정보 응답
+    return new RewardRequestResponse(reward.items);
   }
 
   async findAllMeRewardRequests(request: GetMeRewardRequestsRequest) {

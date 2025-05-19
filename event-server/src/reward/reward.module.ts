@@ -12,6 +12,7 @@ import { EventConditionValidator } from '../event/event-condition-validator.serv
 import { NestRewardRequestEventPublisher } from './event/publisher/nest-reward-request-event-publisher';
 import { RewardRequestEventLister } from './event/listener/reward-request-event.lister';
 import { RedisService } from '../redis/redis.service';
+import { RewardRequestRateLimitInterceptor } from './interceptors/reward-request-rate-limit.interceptor';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { RedisService } from '../redis/redis.service';
     },
     RewardRequestEventLister,
     RedisService,
+    RewardRequestRateLimitInterceptor,
   ],
 })
 export class RewardModule {}

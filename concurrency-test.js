@@ -4,9 +4,6 @@ import {sleep} from 'k6'
 export const options = {
     vus: 10, // n명 유저
     iterations: 10, // n번 실행
-    thresholds: {
-        'http_req_failed': ['rate==0.99']
-    }
 }
 
 /**

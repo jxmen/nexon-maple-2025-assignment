@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, UseInterceptors } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { RewardService } from './reward.service';
 import { GetRewardsResponse } from './dto/get-rewards.response';
@@ -9,6 +9,8 @@ import { GetMeRewardRequestsRequest } from './dto/get-me-reward-requests.request
 import { GetMeRewardRequestsResponse } from './dto/get-me-reward-requests.response';
 import { GetRewardRequestsRequest } from './dto/get-reward-requests.request';
 import { GetRewardRequestsResponse } from './dto/get-reward-requests.response';
+import { RewardRequestRateLimitInterceptor } from './interceptors/reward-request-rate-limit.interceptor';
+import { RewardRequestEventPublishInterceptor } from './interceptors/reward-request-event-publish.interceptor';
 
 @Controller('reward')
 export class RewardController {
@@ -33,6 +35,10 @@ export class RewardController {
     };
   }
 
+  @UseInterceptors(
+    RewardRequestRateLimitInterceptor,
+    RewardRequestEventPublishInterceptor,
+  )
   @MessagePattern('reward-request')
   async rewardRequest(@Payload() request: RewardRequestRequest) {
     const { event_code, user_id } = request;
