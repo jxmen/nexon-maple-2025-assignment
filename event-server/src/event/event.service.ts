@@ -7,7 +7,6 @@ import { GetEventsResponse } from './dto/get-events.response';
 import { RpcException } from '@nestjs/microservices';
 import { GetEventDetailResponse } from './dto/get-event-detail.response';
 import { Reward } from '../reward/reward.schema';
-import { CreateEventRewardRequest } from './dto/create-event-reward.request';
 import { EventValidator } from './event.validator';
 import { RewardRequestLog } from '../reward/reward-request-log.schema';
 import { EventEntity } from './event.entity';
@@ -55,20 +54,6 @@ export class EventService {
     const event = await this.validateExistByCode(code);
 
     return new GetEventDetailResponse(event);
-  }
-
-  async createRewards(request: CreateEventRewardRequest) {
-    const { event_code } = request;
-    const event = await this.validateExistByCode(event_code);
-    await this.validateRewardNotExistByEventCode(event_code);
-
-    const created = new this.rewardModel({
-      event_code,
-      event_name: event.name,
-      items: request.items,
-    });
-    await created.save();
-    this.logger.debug(`이벤트 '${event_code}' 보상 생성됨`);
   }
 
   /**
@@ -145,22 +130,6 @@ export class EventService {
     }
 
     return reward;
-  }
-
-  private async validateRewardNotExistByEventCode(eventCode: string) {
-    const reward = await this.rewardModel
-      .findOne({ event_code: eventCode })
-      .exec();
-
-    if (reward) {
-      this.logger.debug(
-        `이벤트에 대한 보상이 이미 생성되었습니다. code: '${eventCode}'`,
-      );
-      throw new RpcException({
-        code: 'ALREADY_REWARD_REGISTERED',
-        message: '이미 이벤트에 대한 보상이 생성되었습니다.',
-      });
-    }
   }
 
   /**
