@@ -86,25 +86,7 @@ export class EventService {
       const eventRaw = await this.validateExistByCode(eventCode);
       const event = new EventEntity(eventRaw);
 
-      if (event.isEnded()) {
-        throw new RpcException({
-          code: 'EVENT_ENDED',
-          message: '종료된 이벤트입니다.',
-        });
-      }
-      if (!event.isStarted()) {
-        throw new RpcException({
-          code: 'EVENT_NOT_STARTED',
-          message: '이벤트가 아직 시작되지 않았습니다.',
-        });
-      }
-      if (!event.isActivate()) {
-        throw new RpcException({
-          code: 'EVENT_NOT_ACTIVATED',
-          message: '이벤트가 아직 활성화되지 않았습니다.',
-        });
-      }
-
+      await this.eventValidator.validateRewardClaimableStatus(event);
       const reward = await this.validateRewardExistByEventCode(eventCode);
       await this.eventValidator.validateUserConditionSatisfied(event, userId);
 

@@ -1,8 +1,34 @@
 import { Injectable } from '@nestjs/common';
 import { EventEntity } from './event.entity';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class EventValidator {
+  /**
+   * 이벤트가 보상을 지급할 수 있는 상태인지 검증합니다. 아닐 경우 예외를 던집니다.
+   * @param event
+   */
+  async validateRewardClaimableStatus(event: EventEntity) {
+    if (event.isEnded()) {
+      throw new RpcException({
+        code: 'EVENT_ENDED',
+        message: '종료된 이벤트입니다.',
+      });
+    }
+    if (!event.isStarted()) {
+      throw new RpcException({
+        code: 'EVENT_NOT_STARTED',
+        message: '이벤트가 아직 시작되지 않았습니다.',
+      });
+    }
+    if (!event.isActivate()) {
+      throw new RpcException({
+        code: 'EVENT_NOT_ACTIVATED',
+        message: '이벤트가 아직 활성화되지 않았습니다.',
+      });
+    }
+  }
+
   /**
    * 유저가 이벤트 조건을 충족했는지 검증합니다.
    *
