@@ -3,7 +3,7 @@ import { RequireRoles } from '../utils/decorators/require-roles';
 import { IsEnum, IsOptional, IsString } from 'class-validator';
 import { RewardService } from '../reward/reward.service';
 import { RewardRequestLogStatus } from '../reward/enum/reward-request-log-status';
-import { GetMeRewardRequestsResponse } from '../reward/dto/get-me-reward-requests.response';
+import { GetMeRewardRequestsResponse } from './dto/get-me-reward-requests.response';
 import { AuthenticatedRequest } from '../utils/authenticated-request';
 
 export class GetRewardRequestsQueryDto {

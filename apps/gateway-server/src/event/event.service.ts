@@ -10,11 +10,11 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { catchError, firstValueFrom, Observable, throwError } from 'rxjs';
-import { CreateEventRequest } from './types/create-event-request';
-import { GetEventsResponse } from './types/get-events.response';
-import { GetEventDetailResponse } from './types/get-event-detail.response';
-import { CreateEventRewardRequest } from './types/create-event-reward.request';
-import { RequestRewardResponse } from './types/request-reward.response';
+import { CreateEventRequest } from './dto/create-event-request';
+import { GetEventsResponse } from './dto/get-events.response';
+import { GetEventDetailResponse } from './dto/get-event-detail.response';
+import { CreateEventRewardRequest } from './dto/create-event-reward.request';
+import { RequestRewardResponse } from './dto/request-reward.response';
 
 @Injectable()
 export class EventService {

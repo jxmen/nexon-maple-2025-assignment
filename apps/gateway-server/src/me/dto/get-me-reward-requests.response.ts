@@ -1,4 +1,4 @@
-import { RewardRequestLogStatus } from '../enum/reward-request-log-status';
+import { RewardRequestLogStatus } from '../../reward/enum/reward-request-log-status';
 
 export type GetMeRewardRequestsResponse = {
   user_id: string;

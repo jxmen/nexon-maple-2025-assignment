@@ -2,10 +2,10 @@ import { Body, Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { RequireRoles } from '../utils/decorators/require-roles';
 import { EventService } from './event.service';
-import { CreateEventRequest } from './types/create-event-request';
-import { GetEventsResponse } from './types/get-events.response';
-import { GetEventDetailResponse } from './types/get-event-detail.response';
-import { CreateEventRewardRequest } from './types/create-event-reward.request';
+import { CreateEventRequest } from './dto/create-event-request';
+import { GetEventsResponse } from './dto/get-events.response';
+import { GetEventDetailResponse } from './dto/get-event-detail.response';
+import { CreateEventRewardRequest } from './dto/create-event-reward.request';
 import { AuthenticatedRequest } from '../utils/authenticated-request';
 
 @Controller('events')
