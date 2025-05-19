@@ -76,17 +76,7 @@ export class EventService {
       // TODO: (redis) 키값으로 조회하고, 없다면 저장하기 (reward-request:event_code:user_id)
 
       // 보상 요청 내역에서 지급하지 않았는지 확인 (캐시가 없거나, redis 장애 시 이 로직 수행)
-      const successLog = await this.rewardRequestLogModel.findOne({
-        event_code: eventCode,
-        user_id: userId,
-        status: 'success',
-      });
-      if (successLog) {
-        throw new RpcException({
-          code: 'REWARD_ALREADY_CLAIMED',
-          message: '보상이 이미 지급되었습니다.',
-        });
-      }
+      await this.validateSuccessLogIsNotExist({ eventCode, userId });
 
       const eventRaw = await this.validateExistByCode(eventCode);
       const event = new EventEntity(eventRaw);
@@ -107,6 +97,25 @@ export class EventService {
       // TODO: 캐시 키 삭제?
 
       throw e;
+    }
+  }
+
+  private async validateSuccessLogIsNotExist(param: {
+    eventCode: string;
+    userId: string;
+  }) {
+    const { eventCode, userId } = param;
+
+    const successLog = await this.rewardRequestLogModel.findOne({
+      event_code: eventCode,
+      user_id: userId,
+      status: 'success',
+    });
+    if (successLog) {
+      throw new RpcException({
+        code: 'REWARD_ALREADY_CLAIMED',
+        message: '보상이 이미 지급되었습니다.',
+      });
     }
   }
 
