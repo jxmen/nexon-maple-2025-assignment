@@ -4,6 +4,10 @@ import { EventService } from './event.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { EventSchema } from './event.schema';
 import { Reward, RewardSchema } from './reward.schema';
+import {
+  RewardRequestLog,
+  RewardRequestLogSchema,
+} from '../reward/reward-request-log.schema';
 
 @Module({
   imports: [
@@ -15,6 +19,10 @@ import { Reward, RewardSchema } from './reward.schema';
       {
         name: Reward.name,
         schema: RewardSchema,
+      },
+      {
+        name: RewardRequestLog.name,
+        schema: RewardRequestLogSchema,
       },
     ]),
   ],
