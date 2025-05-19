@@ -1,4 +1,4 @@
-import { TestEventBuilder } from './test-event-builder';
+import { TestEventEntityBuilder } from './test-event-entity-builder';
 import { EventStatus } from '../../src/event/event.schema';
 import { EventType } from '../../src/event/enum/event-type';
 
@@ -7,11 +7,11 @@ function dateOf(year: number, month: number, day: number): Date {
   return new Date(year, month - 1, day);
 }
 
-describe('Event', () => {
-  let testEventBuilder: TestEventBuilder;
+describe('EventEntity', () => {
+  let builder: TestEventEntityBuilder;
 
   beforeEach(() => {
-    testEventBuilder = new TestEventBuilder();
+    builder = new TestEventEntityBuilder();
   });
 
   describe('isEnded 메서드는', () => {
@@ -19,7 +19,7 @@ describe('Event', () => {
       const currentDate = dateOf(2025, 5, 19);
       const endDate = dateOf(2025, 5, 18);
 
-      const event = testEventBuilder.withEndDate(endDate).build();
+      const event = builder.withEndDate(endDate).build();
 
       expect(event.isEnded(currentDate)).toBeTruthy();
     });
@@ -28,7 +28,7 @@ describe('Event', () => {
       const currentDate = dateOf(2025, 5, 17);
       const endDate = dateOf(2025, 5, 17);
 
-      const event = testEventBuilder.withEndDate(endDate).build();
+      const event = builder.withEndDate(endDate).build();
 
       expect(event.isEnded(currentDate)).toBeFalsy();
     });
@@ -39,7 +39,7 @@ describe('Event', () => {
       const currentDate = dateOf(2025, 5, 19);
       const startDate = dateOf(2025, 5, 18);
 
-      const event = testEventBuilder.withStartDate(startDate).build();
+      const event = builder.withStartDate(startDate).build();
 
       expect(event.isStarted(currentDate)).toBeTruthy();
     });
@@ -48,7 +48,7 @@ describe('Event', () => {
       const currentDate = dateOf(2025, 5, 17);
       const startDate = dateOf(2025, 5, 18);
 
-      const event = testEventBuilder.withStartDate(startDate).build();
+      const event = builder.withStartDate(startDate).build();
 
       expect(event.isStarted(currentDate)).toBeFalsy();
     });
@@ -56,7 +56,7 @@ describe('Event', () => {
 
   describe('isActivate 메서드는', () => {
     it('이벤트 상태가 activate 라면 true', () => {
-      const event = testEventBuilder.withStatus('activate').build();
+      const event = builder.withStatus('activate').build();
 
       expect(event.isActivate()).toBeTruthy();
     });
@@ -66,7 +66,7 @@ describe('Event', () => {
     it.each(nonActivateStatuses)(
       '이벤트 상태가 "%s"인 경우 false를 리턴한다',
       (status) => {
-        const event = testEventBuilder.withStatus(status).build();
+        const event = builder.withStatus(status).build();
 
         expect(event.isActivate()).toBeFalsy();
       },
@@ -75,7 +75,7 @@ describe('Event', () => {
 
   describe('isCheckInType 메서드는', () => {
     it('이벤트 타입이 check-in일 경우 true를 리턴한다', () => {
-      const event = testEventBuilder.withType(EventType.CHECK_IN).build();
+      const event = builder.withType(EventType.CHECK_IN).build();
 
       expect(event.isCheckInType()).toBeTruthy();
     });

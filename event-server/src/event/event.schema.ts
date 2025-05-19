@@ -32,26 +32,6 @@ export class Event {
 
   @Prop({ default: now() })
   updatedAt: Date;
-
-  public constructor(init?: Partial<Event>) {
-    Object.assign(this, init);
-  }
-
-  isEnded(date: Date = new Date()) {
-    return date > this.end_date;
-  }
-
-  isStarted(date: Date = new Date()) {
-    return date > this.start_date;
-  }
-
-  isActivate() {
-    return this.status === 'activate';
-  }
-
-  isCheckInType() {
-    return this.type === EventType.CHECK_IN;
-  }
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);

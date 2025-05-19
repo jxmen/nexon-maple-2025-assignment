@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { RequireRoles } from '../utils/decorators/require-roles';
 import { EventService } from './event.service';
@@ -6,6 +6,7 @@ import { CreateEventRequest } from './types/create-event-request';
 import { GetEventsResponse } from './types/get-events.response';
 import { GetEventDetailResponse } from './types/get-event-detail.response';
 import { CreateEventRewardRequest } from './types/create-event-reward.request';
+import { AuthenticatedRequest } from '../utils/authenticated-request';
 
 @Controller('events')
 export class EventController {
@@ -57,6 +58,27 @@ export class EventController {
     res.status(201).send({
       status: 201,
       result: 'success',
+    });
+  }
+
+  @Post(':event_code/reward-request')
+  @RequireRoles('user')
+  async rewardRequest(
+    @Param('event_code') eventCode: string,
+    @Req() req: AuthenticatedRequest,
+    @Res() res: Response,
+  ) {
+    const userId = req.user.id;
+
+    const reward = await this.eventService.rewardRequest(eventCode, userId);
+
+    res.status(200).send({
+      status: 200,
+      result: 'success',
+      message: '보상이 성공적으로 지급되었습니다.',
+      data: {
+        items: reward.items,
+      },
     });
   }
 }

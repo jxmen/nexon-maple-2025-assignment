@@ -8,6 +8,7 @@ import {
   RewardRequestLog,
   RewardRequestLogSchema,
 } from '../reward/reward-request-log.schema';
+import { EventValidator } from './event.validator';
 
 @Module({
   imports: [
@@ -27,6 +28,6 @@ import {
     ]),
   ],
   controllers: [EventController],
-  providers: [EventService],
+  providers: [EventService, EventValidator],
 })
 export class EventModule {}
