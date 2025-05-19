@@ -10,6 +10,7 @@ import { GetMeRewardRequestsResponse } from './dto/get-me-reward-requests.respon
 import { GetRewardRequestsRequest } from './dto/get-reward-requests.request';
 import { GetRewardRequestsResponse } from './dto/get-reward-requests.response';
 import { RewardRequestRateLimitInterceptor } from './interceptors/reward-request-rate-limit.interceptor';
+import { RewardRequestEventPublishInterceptor } from './interceptors/reward-request-event-publish.interceptor';
 
 @Controller('reward')
 export class RewardController {
@@ -34,7 +35,10 @@ export class RewardController {
     };
   }
 
-  @UseInterceptors(RewardRequestRateLimitInterceptor)
+  @UseInterceptors(
+    RewardRequestRateLimitInterceptor,
+    RewardRequestEventPublishInterceptor,
+  )
   @MessagePattern('reward-request')
   async rewardRequest(@Payload() request: RewardRequestRequest) {
     const { event_code, user_id } = request;

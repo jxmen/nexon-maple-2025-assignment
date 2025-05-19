@@ -5,14 +5,12 @@ import { RewardRequestFaildEvent } from '../reward-request-faild.event';
 import { RewardRequestLog } from '../../reward-request-log.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { RedisService } from '../../../redis/redis.service';
 
 @Injectable()
 export class RewardRequestEventLister {
   constructor(
     @InjectModel(RewardRequestLog.name)
     private readonly logModel: Model<RewardRequestLog>,
-    private readonly redisService: RedisService,
   ) {}
 
   private readonly logger = new Logger(RewardRequestEventLister.name);
@@ -27,12 +25,9 @@ export class RewardRequestEventLister {
       status: 'success',
     });
     await successLog.save();
-    this.logger.debug(
-      `이벤트 보상 요청 성공! - eventCode: '${eventCode}', userId: '${userId}`,
-    );
 
-    await this.redisService.del(
-      `reward-request-rate-limit:${eventCode}:${userId}`,
+    this.logger.debug(
+      `이벤트 보상 요청 성공! - eventCode: '${eventCode}', userId: '${userId}'`,
     );
   }
 
@@ -48,7 +43,7 @@ export class RewardRequestEventLister {
     await failedLog.save();
 
     this.logger.debug(
-      `이벤트 보상 요청 실패. eventCode: '${eventCode}', userId: '${userId}`,
+      `이벤트 보상 요청 실패. eventCode: '${eventCode}', userId: '${userId}'`,
     );
   }
 }
