@@ -9,6 +9,11 @@ export class TestEventBuilder {
     return this;
   }
 
+  withStartDate(date: Date) {
+    this.event.start_date = date;
+    return this;
+  }
+
   build(): Event {
     return new Event({
       code: this.event.code ?? 'TEST_CODE',

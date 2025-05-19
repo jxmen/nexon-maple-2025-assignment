@@ -25,4 +25,24 @@ describe('Event', () => {
       expect(event.isEnded(currentDate)).toBeFalsy();
     });
   });
+
+  describe('isStarted 메서드는', () => {
+    it('현재 시간이 시작 시간 이후라면 true를 리턴한다', () => {
+      const currentDate = dateOf(2025, 5, 19);
+      const startDate = dateOf(2025, 5, 18);
+
+      const event = new TestEventBuilder().withStartDate(startDate).build();
+
+      expect(event.isStarted(currentDate)).toBeTruthy();
+    });
+
+    it('현재 시간이 시작 시간 전이라면 false를 리턴한다', () => {
+      const currentDate = dateOf(2025, 5, 17);
+      const startDate = dateOf(2025, 5, 18);
+
+      const event = new TestEventBuilder().withStartDate(startDate).build();
+
+      expect(event.isStarted(currentDate)).toBeFalsy();
+    });
+  });
 });
