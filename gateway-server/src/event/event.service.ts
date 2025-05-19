@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   ForbiddenException,
+  HttpException,
   Inject,
   Injectable,
   InternalServerErrorException,
@@ -116,6 +117,8 @@ export class EventService {
         .pipe(
           catchError((err) => {
             const errorHandlers: Record<string, () => Observable<never>> = {
+              TOO_MANY_REQUESTS: () =>
+                throwError(() => new HttpException(err.message, 429)),
               EVENT_NOT_FOUND: () => this.handleEventNotFound(err),
               EVENT_ENDED: () =>
                 throwError(() => new BadRequestException(err.message)),
