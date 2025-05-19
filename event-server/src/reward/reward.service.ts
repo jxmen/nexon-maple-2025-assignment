@@ -10,9 +10,10 @@ import { EventEntity } from '../event/event.entity';
 import { RewardRequestSuccessEvent } from 'src/reward/event/reward-request-success.event';
 import { RewardRequestFaildEvent } from 'src/reward/event/reward-request-faild.event';
 import { RewardRequestLog } from './reward-request-log.schema';
-import { EventValidator } from '../event/event.validator';
+import { EventConditionValidator } from '../event/event-condition-validator.service';
 import { RewardRequestEventPublisher } from './reward-request-event.publisher.interface';
 import { RewardRequestResponse } from '../event/dto/reward-request.response';
+import { EventStatusValidator } from '../event/event-status-validator';
 
 @Injectable()
 export class RewardService {
@@ -23,7 +24,7 @@ export class RewardService {
     @InjectModel(RewardRequestLog.name)
     private readonly rewardRequestLogModel: Model<RewardRequestLog>,
     // === others ...
-    private readonly eventValidator: EventValidator,
+    private readonly eventConditionValidator: EventConditionValidator,
     @Inject('RewardRequestEventPublisher')
     private readonly eventPublisher: RewardRequestEventPublisher,
   ) {}
@@ -73,10 +74,23 @@ export class RewardService {
       const eventRaw = await this.validateExistByCode(eventCode);
       const event = new EventEntity(eventRaw);
 
-      // 이벤트 검증 - 보상을 줄 수 있는 상태인지, 조건을 충족하는지 등
-      await this.eventValidator.validateRewardClaimableStatus(event);
+      // 이벤트 검증 - 보상을 줄 수 있는 상태인지 검증
+      try {
+        await new EventStatusValidator(event).validateRewardClaimable();
+      } catch (err) {
+        throw new RpcException({
+          code: err.code,
+          message: err.message,
+        });
+      }
+
       const reward = await this.validateRewardExistByEventCode(eventCode);
-      await this.eventValidator.validateUserConditionSatisfied(event, userId);
+
+      // 이벤트 조건 충족 여부 검증
+      await this.eventConditionValidator.validateUserConditionSatisfied(
+        event,
+        userId,
+      );
 
       // 성공 이벤트 발행
       this.eventPublisher.publish(

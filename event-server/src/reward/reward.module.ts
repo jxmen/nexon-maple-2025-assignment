@@ -8,7 +8,7 @@ import {
   RewardRequestLog,
   RewardRequestLogSchema,
 } from './reward-request-log.schema';
-import { EventValidator } from '../event/event.validator';
+import { EventConditionValidator } from '../event/event-condition-validator.service';
 import { NestRewardRequestEventPublisher } from './event/publisher/nest-reward-request-event-publisher';
 import { RewardRequestEventLister } from './event/listener/reward-request-event.lister';
 
@@ -32,7 +32,7 @@ import { RewardRequestEventLister } from './event/listener/reward-request-event.
   controllers: [RewardController],
   providers: [
     RewardService,
-    EventValidator,
+    EventConditionValidator,
     {
       provide: 'RewardRequestEventPublisher',
       useClass: NestRewardRequestEventPublisher,
