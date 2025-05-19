@@ -36,3 +36,4 @@
 - [ ] monorepo로 전환
   - [ ] shared 디렉토리 만들고 gateway <-> 타 서버 dto 통일
 - [ ] API 응답 값 통일
+- [ ] API 요청 값 validation gateway 서버에서 모두 처리하도록 변경 (class-validator)
