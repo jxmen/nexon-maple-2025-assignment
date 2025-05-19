@@ -1,9 +1,11 @@
-export class UserLoginRequest {
-  constructor(id: string, password: string) {
-    this.id = id;
-    this.password = password;
-  }
+import { IsNotEmpty, IsString } from 'class-validator';
 
+export class UserLoginRequest {
+  @IsString()
+  @IsNotEmpty()
   id: string;
+
+  @IsString()
+  @IsNotEmpty()
   password: string;
 }
