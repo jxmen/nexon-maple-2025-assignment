@@ -4,7 +4,7 @@ services:
     image: node:18
     working_dir: /app
     volumes:
-      - ./gateway-server:/app
+      - ./apps/gateway-server:/app
     command: ["npm", "start"]
     ports:
       - "3001:3001"
@@ -16,7 +16,7 @@ services:
     image: node:18
     working_dir: /app
     volumes:
-      - ./auth-server:/app
+      - ./apps/auth-server:/app
     command: ["npm", "start"]
     ports:
       - "3002:3002"
@@ -27,7 +27,7 @@ services:
     image: node:18
     working_dir: /app
     volumes:
-      - ./event-server:/app
+      - ./apps/event-server:/app
     command: ["npm", "start"]
     ports:
       - "3003:3003"
