@@ -11,9 +11,14 @@
 │   ├── event-server # 이벤트 서버
 │   └── gateway-server # 게이트웨이 서버
 ├── docker-compose.yml
-├── docs # 문서
+├── docs
+│   ├── api
+│   ├──── README.md # API 문서
 └── test-files # API, 동시성 테스트 시 사용한 파일 모음 디렉토리
-
+    ├── concurrency-test.js
+    ├── event-api-test.http
+    ├── README.md
+    └── user-api-test.http
 ```
 
 ### 서버 실행 방법 및 유의사항
@@ -49,9 +54,10 @@ $ npm test # 테스트 실행
 - Auth Server: 인증, 유저 관련 요청 처리
 - Event Server: 이벤트, 보상 관련 처리
 
-### API 문서
+### API 문서 및 테스트 시 사용한 파일
 
-- [ ] TODO
+- [API 문서](./docs/api/README.md)
+- API 테스트 / 동시성 테스트 시에 사용한 파일은 [test-files](./test-files) 디렉토리를 확인해주세요.
 
 ### 프로젝트 중점 사항
 
@@ -63,10 +69,6 @@ $ npm test # 테스트 실행
 - Redis로 스로틀링 기능 구현하여 중복 요청 방지 ([PR #18](https://github.com/jxmen/nexon-maple-2025-assignment/pull/18))
 - [NestJS Interceptor](https://docs.nestjs.com/interceptors) 기능을 사용하여 관심사
   분리 ([PR #19](https://github.com/jxmen/nexon-maple-2025-assignment/pull/19))
-
-### API / 동시성 테스트 시 사용한 파일
-
-[test-files](./test-files) 디렉토리를 확인해주세요.
 
 ### 회고
 

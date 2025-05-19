@@ -33,11 +33,11 @@ Authorization: Bearer {{user_access_token}}
 GET http://localhost:3001/events
 
 ### 이벤트 상세 조회
-GET http://localhost:3001/events/20250517-check-in
+@event_code = 20250517-check-in
+GET http://localhost:3001/events/{{event_code}}
 
 
 ### 이벤트 보상 등록 (관리자, 운영자만 가능)
-@event_code = 20250517-check-in
 POST http://localhost:3001/events/{{event_code}}/rewards
 Content-Type: application/json
 Authorization: Bearer {{operator_access_token}}
