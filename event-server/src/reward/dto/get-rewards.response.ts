@@ -1,4 +1,4 @@
-import { Reward } from '../../event/reward.schema';
+import { Reward } from '../reward.schema';
 
 export class GetRewardsResponse {
   constructor(reward: Reward) {

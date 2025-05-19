@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { GetRewardsResponse } from './dto/get-rewards.response';
-import { Reward } from '../event/reward.schema';
+import { Reward } from './reward.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 

@@ -6,7 +6,7 @@ import { Event } from './event.schema';
 import { GetEventsResponse } from './dto/get-events.response';
 import { RpcException } from '@nestjs/microservices';
 import { GetEventDetailResponse } from './dto/get-event-detail.response';
-import { Reward } from './reward.schema';
+import { Reward } from '../reward/reward.schema';
 import { CreateEventRewardRequest } from './dto/create-event-reward.request';
 import { EventValidator } from './event.validator';
 import { RewardRequestLog } from '../reward/reward-request-log.schema';

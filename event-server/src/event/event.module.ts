@@ -3,7 +3,7 @@ import { EventController } from './event.controller';
 import { EventService } from './event.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { EventSchema } from './event.schema';
-import { Reward, RewardSchema } from './reward.schema';
+import { Reward, RewardSchema } from '../reward/reward.schema';
 import {
   RewardRequestLog,
   RewardRequestLogSchema,
