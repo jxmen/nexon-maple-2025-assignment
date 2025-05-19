@@ -18,7 +18,6 @@ import { GetMeRewardRequestsRequest } from './dto/get-me-reward-requests.request
 import { GetMeRewardRequestsResponse } from './dto/get-me-reward-requests.response';
 import { GetRewardRequestsRequest } from './dto/get-reward-requests.request';
 import { GetRewardRequestsResponse } from './dto/get-reward-requests.response';
-import { RedisService } from '../redis/redis.service';
 
 @Injectable()
 export class RewardService {
@@ -32,7 +31,6 @@ export class RewardService {
     private readonly eventConditionValidator: EventConditionValidator,
     @Inject('RewardRequestEventPublisher')
     private readonly eventPublisher: RewardRequestEventPublisher,
-    private readonly redisService: RedisService,
   ) {}
 
   private readonly logger = new Logger(RewardService.name);
@@ -71,16 +69,6 @@ export class RewardService {
    */
   async requestReward(eventCode: string, userId: string) {
     try {
-      // 최초 요청은 eventCode:userId 형태로 키값을 저장합니다. 한번에 너무 많은 요청이 들어오면 예외를 던집니다.
-      const key = `reward-request-rate-limit:${eventCode}:${userId}`;
-      const allowed = await this.redisService.set(key, '1');
-      if (!allowed) {
-        throw new RpcException({
-          code: 'TOO_MANY_REQUESTS',
-          message: '요청이 너무 빠릅니다. 잠시 후 다시 시도해주세요.',
-        });
-      }
-
       // 보상 요청 내역에서 지급하지 않았는지 검증
       await this.validateSuccessLogIsNotExist({ eventCode, userId });
 
