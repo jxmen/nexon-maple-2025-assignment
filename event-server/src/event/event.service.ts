@@ -130,9 +130,6 @@ export class EventService {
 
       throw e;
     }
-
-    // TODO: 어떤 보상을 지급하는지 정보 리턴
-    return undefined;
   }
 
   private async validateRewardExistByEventCode(eventCode: string) {
