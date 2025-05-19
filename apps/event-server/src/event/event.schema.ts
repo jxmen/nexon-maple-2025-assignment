@@ -27,10 +27,10 @@ export class Event {
   @Prop({ required: true, default: 'activate' })
   status: EventStatus;
 
-  @Prop({ default: now() })
+  @Prop({ default: now })
   createdAt: Date;
 
-  @Prop({ default: now() })
+  @Prop({ default: now })
   updatedAt: Date;
 }
 

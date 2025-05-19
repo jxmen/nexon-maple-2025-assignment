@@ -18,11 +18,11 @@ export class RewardRequestLog {
   status: RewardRequestLogStatus;
 
   // --- Dates
-  @Prop({ default: now() })
-  createdAt: Date = new Date();
+  @Prop({ default: now })
+  createdAt: Date;
 
-  @Prop({ default: now() })
-  updatedAt: Date = new Date();
+  @Prop({ default: now })
+  updatedAt: Date;
 }
 
 export const RewardRequestLogSchema =
