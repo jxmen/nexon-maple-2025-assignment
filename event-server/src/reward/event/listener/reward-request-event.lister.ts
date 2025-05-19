@@ -2,7 +2,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { RewardRequestSuccessEvent } from '../reward-request-success.event';
 import { Injectable, Logger } from '@nestjs/common';
 import { RewardRequestFaildEvent } from '../reward-request-faild.event';
-import { RewardRequestLog } from '../../../reward/reward-request-log.schema';
+import { RewardRequestLog } from '../../reward-request-log.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 

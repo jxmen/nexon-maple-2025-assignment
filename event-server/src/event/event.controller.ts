@@ -2,8 +2,6 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { CreateEventRequest } from './dto/create-event.request';
 import { EventService } from './event.service';
-import { RewardRequestRequest } from './dto/reward-request.request';
-import { RewardRequestResponse } from './dto/reward-request.response';
 
 @Controller('event')
 export class EventController {
@@ -30,18 +28,5 @@ export class EventController {
     const { code } = payload;
 
     return await this.eventService.findByCode(code);
-  }
-
-  @MessagePattern('reward-request')
-  async rewardRequest(@Payload() request: RewardRequestRequest) {
-    const { event_code, user_id } = request;
-
-    const response: RewardRequestResponse =
-      await this.eventService.requestReward(event_code, user_id);
-
-    return {
-      result: 'success',
-      items: response.items,
-    };
   }
 }
