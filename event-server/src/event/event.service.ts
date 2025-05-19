@@ -71,6 +71,12 @@ export class EventService {
     this.logger.debug(`이벤트 '${event_code}' 보상 생성됨`);
   }
 
+  /**
+   * 보상을 요청합니다.
+   *
+   * @param eventCode 이벤트 식별자
+   * @param userId 유저 식별자
+   */
   async requestReward(eventCode: string, userId: string) {
     try {
       // TODO: (redis) 키값으로 조회하고, 없다면 저장하기 (reward-request:event_code:user_id)
@@ -78,18 +84,22 @@ export class EventService {
       // 보상 요청 내역에서 지급하지 않았는지 확인 (캐시가 없거나, redis 장애 시 이 로직 수행)
       await this.validateSuccessLogIsNotExist({ eventCode, userId });
 
+      // 이벤트가 있는지 조회하고, 엔티티로 만든다. (엔티티 메서드를 통해 내부 비즈니스 로직을 검증한다.)
       const eventRaw = await this.validateExistByCode(eventCode);
       const event = new EventEntity(eventRaw);
 
+      // 이벤트 검증 - 보상을 줄 수 있는 상태인지, 조건을 충족하는지 등
       await this.eventValidator.validateRewardClaimableStatus(event);
       const reward = await this.validateRewardExistByEventCode(eventCode);
       await this.eventValidator.validateUserConditionSatisfied(event, userId);
 
+      // 성공 이벤트 발행
       this.eventPublisher.publish(
         new RewardRequestSuccessEvent({ eventCode, userId }),
       );
       return new RewardRequestResponse(reward.items);
     } catch (e) {
+      // 실패 이벤트 발행
       this.eventPublisher.publish(
         new RewardRequestFaildEvent({ eventCode, userId }),
       );
