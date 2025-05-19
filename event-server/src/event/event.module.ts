@@ -9,6 +9,8 @@ import {
   RewardRequestLogSchema,
 } from '../reward/reward-request-log.schema';
 import { EventValidator } from './event.validator';
+import { NestRewardRequestEventPublisher } from './event/publisher/nest-reward-request-event-publisher';
+import { RewardRequestEventLister } from './event/listener/reward-request-event.lister';
 
 @Module({
   imports: [
@@ -28,6 +30,14 @@ import { EventValidator } from './event.validator';
     ]),
   ],
   controllers: [EventController],
-  providers: [EventService, EventValidator],
+  providers: [
+    EventService,
+    EventValidator,
+    {
+      provide: 'RewardRequestEventPublisher',
+      useClass: NestRewardRequestEventPublisher,
+    },
+    RewardRequestEventLister,
+  ],
 })
 export class EventModule {}

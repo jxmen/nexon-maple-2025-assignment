@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { CreateEventRequest } from './dto/create-event.request';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -12,6 +12,9 @@ import { EventValidator } from './event.validator';
 import { RewardRequestLog } from '../reward/reward-request-log.schema';
 import { EventEntity } from './event.entity';
 import { RewardRequestResponse } from './dto/reward-request.response';
+import { RewardRequestEventPublisher } from './reward-request-event.publisher.interface';
+import { RewardRequestSuccessEvent } from './event/reward-request-success.event';
+import { RewardRequestFaildEvent } from './event/reward-request-faild.event';
 
 @Injectable()
 export class EventService {
@@ -23,6 +26,8 @@ export class EventService {
     @InjectModel(RewardRequestLog.name)
     private readonly rewardRequestLogModel: Model<RewardRequestLog>,
     private readonly eventValidator: EventValidator,
+    @Inject('RewardRequestEventPublisher')
+    private readonly eventPublisher: RewardRequestEventPublisher,
   ) {}
 
   async create(req: CreateEventRequest) {
@@ -90,23 +95,14 @@ export class EventService {
       const reward = await this.validateRewardExistByEventCode(eventCode);
       await this.eventValidator.validateUserConditionSatisfied(event, userId);
 
-      // 성공 내역 쌓기 - TODO: 비동기로 전환
-      const newSuccessLog = new this.rewardRequestLogModel({
-        event_code: eventCode,
-        user_id: userId,
-        status: 'success',
-      });
-      await newSuccessLog.save();
-
+      this.eventPublisher.publish(
+        new RewardRequestSuccessEvent({ eventCode, userId }),
+      );
       return new RewardRequestResponse(reward.items);
     } catch (e) {
-      // 실패 내역 쌓기 - TODO: 비동기로 전환
-      const failedLog = new this.rewardRequestLogModel({
-        event_code: eventCode,
-        user_id: userId,
-        status: 'failed',
-      });
-      await failedLog.save();
+      this.eventPublisher.publish(
+        new RewardRequestFaildEvent({ eventCode, userId }),
+      );
 
       // TODO: 캐시 키 삭제?
 
