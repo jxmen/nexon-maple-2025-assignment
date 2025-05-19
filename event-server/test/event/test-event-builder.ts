@@ -1,4 +1,4 @@
-import { Event } from '../../src/event/event.schema';
+import { Event, EventStatus } from '../../src/event/event.schema';
 import { EventType } from '../../src/event/enum/event-type';
 
 export class TestEventBuilder {
@@ -11,6 +11,11 @@ export class TestEventBuilder {
 
   withStartDate(date: Date) {
     this.event.start_date = date;
+    return this;
+  }
+
+  withStatus(status: EventStatus) {
+    this.event.status = status;
     return this;
   }
 

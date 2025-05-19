@@ -44,6 +44,10 @@ export class Event {
   isStarted(date: Date = new Date()) {
     return date > this.start_date;
   }
+
+  isActivate() {
+    return this.status === 'activate';
+  }
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);
