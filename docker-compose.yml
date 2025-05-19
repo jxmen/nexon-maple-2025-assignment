@@ -48,7 +48,7 @@ services:
     image: mongo:latest
     container_name: event-mongodb
     ports:
-      - "27017:27017"
+      - "27018:27017"
     volumes:
       - event-mongo-data:/data/db
     environment:

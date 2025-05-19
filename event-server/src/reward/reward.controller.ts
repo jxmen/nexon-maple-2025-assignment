@@ -5,6 +5,10 @@ import { GetRewardsResponse } from './dto/get-rewards.response';
 import { CreateEventRewardRequest } from './dto/create-event-reward.request';
 import { RewardRequestRequest } from './dto/reward-request.request';
 import { RewardRequestResponse } from './dto/reward-request.response';
+import { GetMeRewardRequestsRequest } from './dto/get-me-reward-requests.request';
+import { GetMeRewardRequestsResponse } from './dto/get-me-reward-requests.response';
+import { GetRewardRequestsRequest } from './dto/get-reward-requests.request';
+import { GetRewardRequestsResponse } from './dto/get-reward-requests.response';
 
 @Controller('reward')
 export class RewardController {
@@ -39,6 +43,28 @@ export class RewardController {
     return {
       result: 'success',
       items: response.items,
+    };
+  }
+
+  @MessagePattern('get-me-reward-requests')
+  async getMeRewardRequests(@Payload() request: GetMeRewardRequestsRequest) {
+    const rewardRequests: GetMeRewardRequestsResponse =
+      await this.rewardService.findAllMeRewardRequests(request);
+
+    return {
+      result: 'success',
+      requests: rewardRequests,
+    };
+  }
+
+  @MessagePattern('get-reward-requests')
+  async getRewardRequests(@Payload() request: GetRewardRequestsRequest) {
+    const requests: GetRewardRequestsResponse[] =
+      await this.rewardService.findAllRewardRequests(request);
+
+    return {
+      results: 'success',
+      requests,
     };
   }
 }

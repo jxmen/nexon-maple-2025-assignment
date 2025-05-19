@@ -4,6 +4,8 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { EventModule } from './event/event.module';
 import { RewardModule } from './reward/reward.module';
+import { MeModule } from './me/me.module';
+import { RewardRequestsModule } from './reward-requests/reward-requests.module';
 
 @Module({
   controllers: [AppController],
@@ -15,6 +17,8 @@ import { RewardModule } from './reward/reward.module';
     }),
     EventModule,
     RewardModule,
+    MeModule,
+    RewardRequestsModule,
   ],
 })
 export class AppModule {}
