@@ -46,12 +46,12 @@ export class EventService {
     );
   }
 
-  async findAll() {
+  async findAll(page: number, size: number) {
     const pattern = 'get-events';
 
     return firstValueFrom(
       this.eventServerClient
-        .send<GetEventsResponse>(pattern, {})
+        .send<GetEventsResponse>(pattern, { page, size })
         .pipe(catchError((err) => this.handleUnexpectedError(err))),
     );
   }

@@ -1,4 +1,15 @@
-import { Body, Controller, Get, Param, Post, Req, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  DefaultValuePipe,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Query,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { RequireRoles } from '../utils/decorators/require-roles';
 import { EventService } from './event.service';
@@ -24,8 +35,15 @@ export class EventController {
   }
 
   @Get()
-  async getEvents(@Res() res: Response) {
-    const response: GetEventsResponse = await this.eventService.findAll();
+  async getEvents(
+    @Res() res: Response,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('size', new DefaultValuePipe(20), ParseIntPipe) size: number,
+  ) {
+    const response: GetEventsResponse = await this.eventService.findAll(
+      page,
+      size,
+    );
 
     res.status(200).send({
       status: 200,

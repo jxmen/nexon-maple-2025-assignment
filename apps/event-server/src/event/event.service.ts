@@ -6,6 +6,7 @@ import { Event } from './event.schema';
 import { GetEventsResponse } from './dto/get-events.response';
 import { RpcException } from '@nestjs/microservices';
 import { GetEventDetailResponse } from './dto/get-event-detail.response';
+import { PaginationQuery } from '../utils/pagination-query';
 
 @Injectable()
 export class EventService {
@@ -45,8 +46,12 @@ export class EventService {
     }
   }
 
-  async findAll() {
-    const events: Event[] = await this.eventModel.find().exec();
+  async findAll(query: PaginationQuery) {
+    const events: Event[] = await this.eventModel
+      .find()
+      .skip((query.page - 1) * query.size)
+      .limit(query.size)
+      .exec();
 
     return events.map((it) => new GetEventsResponse(it));
   }
