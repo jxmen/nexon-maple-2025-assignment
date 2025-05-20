@@ -15,6 +15,7 @@ import { GetMeRewardRequestsRequest } from './dto/get-me-reward-requests.request
 import { GetMeRewardRequestsResponse } from './dto/get-me-reward-requests.response';
 import { GetRewardRequestsRequest } from './dto/get-reward-requests.request';
 import { GetRewardRequestsResponse } from './dto/get-reward-requests.response';
+import { PaginationQuery } from '../utils/pagination-query';
 
 @Injectable()
 export class RewardService {
@@ -33,8 +34,12 @@ export class RewardService {
   /**
    * 보상 목록을 리턴합니다.
    */
-  async findAll(): Promise<GetRewardsResponse[]> {
-    const rewards: Reward[] = await this.rewardModel.find({}).exec();
+  async findAll(query: PaginationQuery): Promise<GetRewardsResponse[]> {
+    const rewards: Reward[] = await this.rewardModel
+      .find({})
+      .skip((query.page - 1) * query.size)
+      .limit(query.size)
+      .exec();
 
     return rewards.map((it) => new GetRewardsResponse(it));
   }
