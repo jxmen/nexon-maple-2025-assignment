@@ -2,9 +2,16 @@ import { TestEventEntityBuilder } from './test-event-entity-builder';
 import { EventStatus } from '../../src/event/event.schema';
 import { EventType } from '../../src/event/enum/event-type';
 
-function dateOf(year: number, month: number, day: number): Date {
+function dateOf(
+  year: number,
+  month: number,
+  day: number,
+  hours: number = 0,
+  minutes: number = 0,
+  seconds: number = 0,
+): Date {
   // NOTE: new Date()는 monthIndex를 받기 때문에 -1을 해준다.
-  return new Date(year, month - 1, day);
+  return new Date(year, month - 1, day, hours, minutes, seconds);
 }
 
 describe('EventEntity', () => {
@@ -15,43 +22,101 @@ describe('EventEntity', () => {
   });
 
   describe('isEnded 메서드는', () => {
-    it('현재 시간이 종료 시간 이후라면 true를 리턴한다', () => {
-      const currentDate = dateOf(2025, 5, 19);
-      const endDate = dateOf(2025, 5, 18);
+    const trueCases = [
+      {
+        description: '현재 시간이 종료 시간 이후라면',
+        currentDate: dateOf(2025, 5, 19, 0, 0),
+        endDate: dateOf(2025, 5, 18, 23, 59),
+      },
+      {
+        description: '현재 시간이 종료 시간보다 하루 이후라면',
+        currentDate: dateOf(2025, 5, 20),
+        endDate: dateOf(2025, 5, 19),
+      },
+      {
+        description: '현재 시간이 종료 시간보다 1초 이후라면',
+        currentDate: dateOf(2025, 5, 20, 10, 5),
+        endDate: dateOf(2025, 5, 20, 10, 4),
+      },
+    ];
 
-      const event = builder.withEndDate(endDate).build();
+    it.each(trueCases)(
+      '$description true를 리턴한다',
+      ({ currentDate, endDate }) => {
+        const event = builder.withEndDate(endDate).build();
+        expect(event.isEnded(currentDate)).toBeTruthy();
+      },
+    );
 
-      expect(event.isEnded(currentDate)).toBeTruthy();
-    });
+    const falseCases = [
+      {
+        description: '현재 시간이 종료 시간보다 하루 이전이라면',
+        currentDate: dateOf(2025, 5, 17),
+        endDate: dateOf(2025, 5, 18),
+      },
+      {
+        description: '현재 시간이 종료 시간보다 1초 이전이라면',
+        currentDate: dateOf(2025, 5, 18, 23, 58, 59),
+        endDate: dateOf(2025, 5, 18, 23, 59),
+      },
+      {
+        description: '현재 시간이 종료 시간 전이라면',
+        currentDate: dateOf(2025, 5, 17),
+        endDate: dateOf(2025, 5, 17),
+      },
+    ];
 
-    it('현재 시간이 종류 시간 전이라면 false를 리턴한다', () => {
-      const currentDate = dateOf(2025, 5, 17);
-      const endDate = dateOf(2025, 5, 17);
-
-      const event = builder.withEndDate(endDate).build();
-
-      expect(event.isEnded(currentDate)).toBeFalsy();
-    });
+    it.each(falseCases)(
+      '$description false를 리턴한다',
+      ({ currentDate, endDate }) => {
+        const event = builder.withEndDate(endDate).build();
+        expect(event.isEnded(currentDate)).toBeFalsy();
+      },
+    );
   });
 
   describe('isStarted 메서드는', () => {
-    it('현재 시간이 시작 시간 이후라면 true를 리턴한다', () => {
-      const currentDate = dateOf(2025, 5, 19);
-      const startDate = dateOf(2025, 5, 18);
+    const successCases = [
+      {
+        description: '현재 시간이 시작 시간 이후라면',
+        currentDate: dateOf(2025, 5, 17),
+        startDate: dateOf(2025, 5, 16),
+      },
+      {
+        description: '현재 시간이 시작 시간 1초 뒤라면',
+        currentDate: dateOf(2025, 5, 17, 10, 5, 1),
+        startDate: dateOf(2025, 5, 17, 10, 5, 0),
+      },
+    ];
 
-      const event = builder.withStartDate(startDate).build();
+    it.each(successCases)(
+      '$description true를 리턴한다',
+      ({ currentDate, startDate }) => {
+        const event = builder.withStartDate(startDate).build();
+        expect(event.isStarted(currentDate));
+      },
+    );
 
-      expect(event.isStarted(currentDate)).toBeTruthy();
-    });
+    const failCases = [
+      {
+        description: '현재 시간이 시작 시간보다 하루 이전이라면',
+        currentDate: dateOf(2025, 5, 17),
+        startDate: dateOf(2025, 5, 18),
+      },
+      {
+        description: '현재 시간이 시작 시간보다 1초 이전이라면',
+        currentDate: dateOf(2025, 5, 18, 8, 59, 59),
+        startDate: dateOf(2025, 5, 18, 9, 0, 0),
+      },
+    ];
 
-    it('현재 시간이 시작 시간 전이라면 false를 리턴한다', () => {
-      const currentDate = dateOf(2025, 5, 17);
-      const startDate = dateOf(2025, 5, 18);
-
-      const event = builder.withStartDate(startDate).build();
-
-      expect(event.isStarted(currentDate)).toBeFalsy();
-    });
+    it.each(failCases)(
+      '$description false를 리턴한다',
+      ({ currentDate, startDate }) => {
+        const event = builder.withStartDate(startDate).build();
+        expect(event.isStarted(currentDate)).toBeFalsy();
+      },
+    );
   });
 
   describe('isActivate 메서드는', () => {
