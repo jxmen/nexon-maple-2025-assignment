@@ -146,8 +146,13 @@ Authorization: Bearer {{admin_access_token}}
 전체 이벤트 목록을 조회합니다.
 
 ```
-GET http://localhost:3001/events
+GET http://localhost:3001/events?page=1&size=5
 ```
+
+쿼리 파라미터로 페이지네이션을 지원합니다.
+
+- page: 읽어올 페이지
+- size: 가져올 개수
 
 ### 응답 예시
 

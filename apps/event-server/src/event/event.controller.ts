@@ -2,6 +2,7 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { CreateEventRequest } from './dto/create-event.request';
 import { EventService } from './event.service';
+import { PaginationQuery } from '../utils/pagination-query';
 
 @Controller('event')
 export class EventController {
@@ -17,8 +18,8 @@ export class EventController {
   }
 
   @MessagePattern('get-events')
-  async getEvents() {
-    const events = await this.eventService.findAll();
+  async getEvents(@Payload() query: PaginationQuery) {
+    const events = await this.eventService.findAll(query);
 
     return { events };
   }
