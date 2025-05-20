@@ -338,6 +338,11 @@ GET http://localhost:3001/me/reward-requests?event_code={{event_code}}
 Authorization: Bearer {{user_access_token}}
 ```
 
+쿼리 파라미터로 필터링을 지원합니다.
+
+- event_code: 이벤트 고유 식별자
+- status: 요청 상태
+
 - 권한: 사용자
 
 ### 응답 예제
@@ -362,11 +367,12 @@ Authorization: Bearer {{user_access_token}}
   }
 }
 ```
+
 - data.user_id: 유저 고유 식별자
 - data.requests[].event_code: 이벤트 고유 식별자
 - data.requests[].status: `'success'` | `'failed'`: 요청 상태
-  - success: 지급 완료
-  - failed: 지급 실패 (요청했으나 받아들여지지 않음) 
+    - success: 지급 완료
+    - failed: 지급 실패 (요청했으나 받아들여지지 않음)
 - data.requests[].created_at: 요청 생성일
 
 ## 보상 요청 내역 목록 조회 (관리자/감시자/운영자용)
@@ -377,7 +383,11 @@ Authorization: Bearer {{user_access_token}}
 GET http://localhost:3001/reward-requests?event_code={{event_code}}&status=success
 Authorization: Bearer {{admin_access_token}}
 ```
-- event_code: 고유 식별자
+
+쿼리 파라미터로 필터링을 지원합니다.
+
+- event_code: 이벤트 고유 식별자
+- status: 요청 상태
 
 ### 응답 예제
 
@@ -394,6 +404,7 @@ Authorization: Bearer {{admin_access_token}}
   ]
 }
 ```
+
 - data: 전체 유저의 보상 요청 내역
 
 
