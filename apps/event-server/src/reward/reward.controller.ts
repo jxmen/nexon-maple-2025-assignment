@@ -11,14 +11,16 @@ import { GetRewardRequestsRequest } from './dto/get-reward-requests.request';
 import { GetRewardRequestsResponse } from './dto/get-reward-requests.response';
 import { RewardRequestRateLimitInterceptor } from './interceptors/reward-request-rate-limit.interceptor';
 import { RewardRequestEventPublishInterceptor } from './interceptors/reward-request-event-publish.interceptor';
+import { PaginationQuery } from '../utils/pagination-query';
 
 @Controller('reward')
 export class RewardController {
   constructor(private readonly rewardService: RewardService) {}
 
   @MessagePattern('get-rewards')
-  async getRewards() {
-    const rewards: GetRewardsResponse[] = await this.rewardService.findAll();
+  async getRewards(@Payload() query: PaginationQuery) {
+    const rewards: GetRewardsResponse[] =
+      await this.rewardService.findAll(query);
 
     return {
       result: 'success',

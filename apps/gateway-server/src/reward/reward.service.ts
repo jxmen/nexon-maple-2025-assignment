@@ -18,12 +18,12 @@ export class RewardService {
     private readonly eventServerClient: ClientProxy,
   ) {}
 
-  async findAll(): Promise<GetRewardsResponse> {
+  async findAll(page: number, size: number): Promise<GetRewardsResponse> {
     const pattern = 'get-rewards';
 
     return firstValueFrom(
       this.eventServerClient
-        .send<GetRewardsResponse>(pattern, {})
+        .send<GetRewardsResponse>(pattern, { page, size })
         .pipe(catchError((err) => this.handleUnexpectedError(err))),
     );
   }

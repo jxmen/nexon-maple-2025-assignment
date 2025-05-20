@@ -254,8 +254,10 @@ Authorization: Bearer {{operator_access_token}}
 이벤트 정보가 포함된 보상 목록을 조회합니다.
 
 ```
-GET http://localhost:3001/rewards
+GET http://localhost:3001/rewards?page=1&size=2
 ```
+
+쿼리 파라미터로 페이지네이션 기능을 제공합니다.
 
 ### 응답 예제
 
